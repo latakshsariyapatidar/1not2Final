@@ -13,25 +13,35 @@ export const usePageTransition = () => {
       return;
     }
 
-    // Add any global transition effects here
+    // Minimal global effects for smooth page changes
     const body = document.body;
     
-    // Add a subtle camera shake effect for cinematic feel
-    gsap.fromTo(body, 
+    // Add a subtle film grain and contrast adjustment for cinematic feel
+    gsap.timeline()
+      .to(body, {
+        filter: 'contrast(1.1) brightness(0.95)',
+        duration: 0.1,
+        ease: "power1.inOut"
+      })
+      .to(body, {
+        filter: 'contrast(1) brightness(1)',
+        duration: 0.2,
+        ease: "power1.out"
+      });
+
+    // Add a subtle camera movement effect
+    gsap.fromTo('.page-content', 
       { 
-        filter: 'blur(0px)',
+        y: 0,
         scale: 1 
       },
       { 
-        filter: 'blur(2px)',
-        scale: 1.002,
-        duration: 0.1,
+        y: 2,
+        scale: 1.001,
+        duration: 0.15,
         yoyo: true,
         repeat: 1,
-        ease: "power2.inOut",
-        onComplete: () => {
-          gsap.set(body, { filter: 'blur(0px)', scale: 1 });
-        }
+        ease: "power1.inOut"
       }
     );
 

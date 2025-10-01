@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const AboutPage = () => {
   return (
@@ -23,6 +24,22 @@ const AboutPage = () => {
             <h3 className="text-2xl font-semibold mb-4 text-[#00B2A9]">Our Values</h3>
             <p className="text-[#A0A0A0]">Innovation, creativity, and storytelling excellence</p>
           </div>
+        </div>
+        
+        {/* Test Navigation Links */}
+        <div className="mt-12 text-center space-x-4">
+          <Link 
+            to="/" 
+            className="inline-block bg-transparent border-2 border-[#00B2A9] text-[#00B2A9] px-4 py-2 rounded hover:bg-[#00B2A9] hover:text-[#1C1C1C] transition-colors"
+          >
+            Back to Home (Test Transition)
+          </Link>
+          <Link 
+            to="/services" 
+            className="inline-block bg-transparent border-2 border-[#00B2A9] text-[#00B2A9] px-4 py-2 rounded hover:bg-[#00B2A9] hover:text-[#1C1C1C] transition-colors"
+          >
+            View Services (Test Transition)
+          </Link>
         </div>
       </div>
     </div>

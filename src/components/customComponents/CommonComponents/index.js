@@ -3,6 +3,7 @@ export { default as Header } from './Header';
 export { default as Layout } from './Layout';
 export { default as PageTransition } from './PageTransition';
 export { default as ClapperboardLoader } from './ClapperboardLoader';
+export { default as ClapperboardLoader3D } from './ClapperboardLoader3D';
 export { default as InitialLoadingScreen } from './InitialLoadingScreen';
 
 // Add other common components here as they are created

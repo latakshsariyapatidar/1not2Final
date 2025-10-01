@@ -1,4 +1,5 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
 import TextPressure from '../outSourcedComponents/TextPressure';
 
@@ -18,8 +19,10 @@ export const StaggeredMenu = ({
   onMenuOpen,
   onMenuClose
 }) => {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
+  const prevLocationRef = useRef(location.pathname);
 
   const panelRef = useRef(null);
   const preLayersRef = useRef(null);
@@ -303,12 +306,30 @@ export const StaggeredMenu = ({
     } else {
       onMenuClose?.();
       playClose();
+      // Return focus to toggle button when closing menu
+      setTimeout(() => {
+        toggleBtnRef.current?.focus();
+      }, 100);
     }
 
     animateIcon(target);
     animateColor(target);
     animateText(target);
   }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
+
+  // Close menu when location changes (navigation occurs)
+  useEffect(() => {
+    if (location.pathname !== prevLocationRef.current && open) {
+      setOpen(false);
+      openRef.current = false;
+      onMenuClose?.();
+      playClose();
+      animateIcon(false);
+      animateColor(false);
+      animateText(false);
+    }
+    prevLocationRef.current = location.pathname;
+  }, [location.pathname, open, onMenuClose, playClose, animateIcon, animateColor, animateText]);
 
   return (
     <div className="sm-scope w-full h-full">
@@ -395,14 +416,44 @@ export const StaggeredMenu = ({
           </button>
         </header>
 
+        {/* Backdrop overlay - close menu when clicking outside */}
+        {open && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-5"
+            onClick={() => {
+              setOpen(false);
+              openRef.current = false;
+              onMenuClose?.();
+              playClose();
+              animateIcon(false);
+              animateColor(false);
+              animateText(false);
+            }}
+            aria-hidden="true"
+          />
+        )}
+
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
           className="staggered-menu-panel absolute top-0 right-0 h-full bg-white flex flex-col p-[6em_2em_2em_2em] overflow-y-auto z-10 backdrop-blur-[12px]"
           style={{ WebkitBackdropFilter: 'blur(12px)' }}
           aria-hidden={!open}
+          inert={!open || undefined}
+          onClick={(e) => {
+            // Close menu when clicking on the aside itself (not on content)
+            if (e.target === e.currentTarget) {
+              setOpen(false);
+              openRef.current = false;
+              onMenuClose?.();
+              playClose();
+              animateIcon(false);
+              animateColor(false);
+              animateText(false);
+            }
+          }}
         >
-          <div className="sm-panel-inner flex-1 flex flex-col gap-5">
+          <div className="sm-panel-inner flex-1 flex flex-col gap-5" onClick={(e) => e.stopPropagation()}>
             <ul
               className="sm-panel-list list-none m-0 p-0 flex flex-col gap-2"
               role="list"
@@ -411,16 +462,16 @@ export const StaggeredMenu = ({
               {items && items.length ? (
                 items.map((it, idx) => (
                   <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
-                    <a
+                    <Link
                       className="sm-panel-item relative text-black font-semibold text-[4rem] cursor-pointer leading-none tracking-[-2px] uppercase transition-[background,color] duration-150 ease-linear inline-block no-underline pr-[1.4em]"
-                      href={it.link}
+                      to={it.link}
                       aria-label={it.ariaLabel}
                       data-index={idx + 1}
                     >
                       <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                         {it.label}
                       </span>
-                    </a>
+                    </Link>
                   </li>
                 ))
               ) : (
@@ -476,8 +527,7 @@ export const StaggeredMenu = ({
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
 .sm-scope .sm-line { display: none !important; }
-.sm-scope .staggered-menu-panel { poimport StaggeredMenu from '../../../ts-default/Components/StaggeredMenu/StaggeredMenu';
-sition: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
