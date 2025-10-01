@@ -17,11 +17,11 @@ const AboutPage = () => {
         </p>
         <div className="grid md:grid-cols-2 gap-8 mt-12">
           <div className="text-center">
-            <h3 className="text-2xl font-semibold mb-4 text-[#00B2A9]">Our Mission</h3>
+            <h3 className="text-2xl font-semibold mb-4 text-[#5227FF]">Our Mission</h3>
             <p className="text-[#A0A0A0]">Creating unforgettable cinematic experiences</p>
           </div>
           <div className="text-center">
-            <h3 className="text-2xl font-semibold mb-4 text-[#00B2A9]">Our Values</h3>
+            <h3 className="text-2xl font-semibold mb-4 text-[#5227FF]">Our Values</h3>
             <p className="text-[#A0A0A0]">Innovation, creativity, and storytelling excellence</p>
           </div>
         </div>
@@ -30,13 +30,13 @@ const AboutPage = () => {
         <div className="mt-12 text-center space-x-4">
           <Link 
             to="/" 
-            className="inline-block bg-transparent border-2 border-[#00B2A9] text-[#00B2A9] px-4 py-2 rounded hover:bg-[#00B2A9] hover:text-[#1C1C1C] transition-colors"
+            className="inline-block bg-transparent border-2 border-[#5227FF] text-[#5227FF] px-4 py-2 rounded hover:bg-[#5227FF] hover:text-[#1C1C1C] transition-colors"
           >
             Back to Home (Test Transition)
           </Link>
           <Link 
             to="/services" 
-            className="inline-block bg-transparent border-2 border-[#00B2A9] text-[#00B2A9] px-4 py-2 rounded hover:bg-[#00B2A9] hover:text-[#1C1C1C] transition-colors"
+            className="inline-block bg-transparent border-2 border-[#FF9FFC] text-[#FF9FFC] px-4 py-2 rounded hover:bg-[#FF9FFC] hover:text-[#1C1C1C] transition-colors"
           >
             View Services (Test Transition)
           </Link>

@@ -77,7 +77,7 @@ function ProjectorModel({ url }) {
 function Loader() {
   return (
     <div className="flex items-center justify-center w-full h-full">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#00B2A9]"></div>
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#5227FF]"></div>
     </div>
   );
 }
@@ -123,10 +123,10 @@ const HomePage = () => {
       <div className="relative z-10 w-full h-full">
         <div className="w-full h-full lg:w-1/2 lg:ml-auto lg:pl-8">
           {/* Add some interactive content here for testing */}
-          <h1 className="text-4xl font-bold mb-4 cursor-pointer hover:text-[#00B2A9] transition-colors">
+          <h1 className="text-4xl font-bold mb-4 cursor-pointer hover:text-[#5227FF] transition-colors">
             Welcome to 1NOT2 Production
           </h1>
-          <p className="text-lg mb-6 cursor-pointer hover:text-[#00B2A9] transition-colors">
+          <p className="text-lg mb-6 cursor-pointer hover:text-[#FF9FFC] transition-colors">
             Move your mouse over the left side to see the projector parallax effect
           </p>
         

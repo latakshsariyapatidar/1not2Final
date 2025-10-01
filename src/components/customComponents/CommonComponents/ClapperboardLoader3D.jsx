@@ -195,7 +195,7 @@ function LoadingFallback() {
       <mesh ref={meshRef} position={[0, 0, 0]} scale={[scale, scale, scale]}>
         <boxGeometry args={[2, 1.2, 0.3]} />
         <meshStandardMaterial 
-          color="#00B2A9" 
+          color="#5227FF" 
           metalness={0.3}
           roughness={0.4}
         />

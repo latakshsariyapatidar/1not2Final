@@ -46,7 +46,7 @@ const clapperAnimationKeyframes = `
 const ClapperboardLoader = ({ 
   size = 120, 
   primaryColor = '#1C1C1C', 
-  accentColor = '#00B2A9',
+  accentColor = '#5227FF',
   textColor = '#EAEAEA' 
 }) => {
   // Inject keyframes into document head

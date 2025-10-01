@@ -52,9 +52,9 @@ function Header() {
         menuButtonColor="#EAEAEA"
         openMenuButtonColor="#1C1C1C"
         changeMenuColorOnOpen={true}
-        colors={["#2B2B2B", "#00B2A9", "#FF6B35"]}
+        colors={["#2B2B2B", "#5227FF", "#FF9FFC"]}
         logoUrl={logo}
-        accentColor="#00B2A9"
+        accentColor="#5227FF"
         className="staggered-menu-override"
         onMenuOpen={() => console.log("Menu opened")}
         onMenuClose={() => console.log("Menu closed")}

@@ -273,20 +273,20 @@ const InitialLoadingScreen = ({ children, minLoadTime = 1000 }) => {
           }}
         />
 
-        {/* Teal Glow Overlay for Cool Transitions */}
+        {/* Purple Glow Overlay for Cool Transitions */}
         <div 
           className="absolute inset-0 z-[2] opacity-40"
           style={{ 
-            background: 'radial-gradient(circle at center, #00B2A9 0%, transparent 70%)',
+            background: 'radial-gradient(circle at center, #5227FF 0%, transparent 70%)',
             pointerEvents: 'none'
           }}
         />
 
-        {/* Orange Glow Overlay for Warm Transitions */}
+        {/* Pink Glow Overlay for Warm Transitions */}
         <div 
           className="absolute inset-0 z-[2] opacity-40"
           style={{ 
-            background: 'radial-gradient(circle at center, #FF6B35 0%, transparent 70%)',
+            background: 'radial-gradient(circle at center, #FF9FFC 0%, transparent 70%)',
             pointerEvents: 'none',
             mixBlendMode: 'overlay'
           }}
