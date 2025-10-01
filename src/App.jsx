@@ -12,7 +12,7 @@ import {
 
 function App() {
   return (
-    <InitialLoadingScreen minLoadTime={2500} fadeOutDuration={1000}>
+    <InitialLoadingScreen minLoadTime={0} fadeOutDuration={1000}>
       <Layout>
         <PageTransition>
           <Routes>

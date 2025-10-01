@@ -3,25 +3,27 @@ import { Header, Background } from '../';
 
 const Layout = ({ children }) => {
   return (
-    <div className="bg-[#1C1C1C] w-full h-[100dvh] relative overflow-hidden film-grain cinematic-bars">
-      {/* Persistent Background */}
-      <Background />
+    <div className="bg-[#1C1C1C] w-full min-h-[100dvh] relative film-grain cinematic-bars">
+      {/* Background Layer - Lowest z-index */}
+      <div className="fixed inset-0 z-0">
+        <Background />
+      </div>
       
-      {/* Persistent Header */}
-      <Header />
-      
-      {/* Page Content Container */}
+      {/* Page Content Layer - Middle z-index */}
       <main 
-        className="relative z-10 w-full h-full"
+        className="relative z-10 w-full min-h-[100dvh]"
         data-barba="wrapper"
       >
         <div 
-          className="page-content w-full h-full"
+          className="page-content relative w-full min-h-[100dvh]"
           data-barba="container"
         >
           {children}
         </div>
       </main>
+      
+      {/* Header/Menu Layer - Highest z-index (positioned last to be on top) */}
+      <Header />
     </div>
   );
 };
