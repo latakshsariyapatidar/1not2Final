@@ -1,0 +1,82 @@
+/* Cinematic Page Transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: scale(1.05) translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: all 600ms ease-out;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  transition: all 300ms ease-in;
+}
+
+/* Cinematic Title Animation */
+@keyframes cinematicGlow {
+  0%, 100% {
+    text-shadow: 
+      0 0 20px rgba(255,255,255,0.3),
+      0 0 40px rgba(255,255,255,0.2),
+      0 0 60px rgba(255,255,255,0.1);
+  }
+  50% {
+    text-shadow: 
+      0 0 30px rgba(255,255,255,0.5),
+      0 0 60px rgba(255,255,255,0.3),
+      0 0 80px rgba(255,255,255,0.2);
+  }
+}
+
+.cinematic-title {
+  animation: cinematicGlow 3s ease-in-out infinite;
+}
+
+/* Film Grain Effect */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  30% { transform: translate(3%, -15%); }
+  50% { transform: translate(12%, 9%); }
+  70% { transform: translate(9%, 4%); }
+  90% { transform: translate(-1%, 7%); }
+}
+
+.film-grain::before {
+  content: '';
+  position: fixed;
+  top: -110%;
+  left: -110%;
+  width: 220%;
+  height: 220%;
+  opacity: 0.02;
+  z-index: 1000;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle, transparent 20%, rgba(255,255,255,0.3) 20.5%, rgba(255,255,255,0.3) 21%, transparent 21%),
+    linear-gradient(0deg, transparent 24%, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.05) 26%, transparent 27%, transparent 74%, rgba(255,255,255,0.05) 75%, rgba(255,255,255,0.05) 76%, transparent 77%, transparent);
+  background-size: 3px 3px;
+  animation: grain 8s steps(10) infinite;
+}
+
+/* Cinematic Widescreen Bars */
+.cinematic-bars::before {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0.8), transparent);
+  z-index: 50;
+  pointer-events: none;
+  top: 0;
+}
