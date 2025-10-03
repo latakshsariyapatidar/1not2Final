@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ServicesPage = () => {
+const WorksPage = () => {
   return (
     <div className="w-full h-full p-8 pt-20 text-[#EAEAEA] overflow-y-auto">
       <div className="max-w-6xl mx-auto">
@@ -29,4 +29,4 @@ const ServicesPage = () => {
   );
 };
 
-export default ServicesPage;
+export default WorksPage;

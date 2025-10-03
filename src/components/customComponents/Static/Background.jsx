@@ -9,17 +9,17 @@ function Background() {
         mouseForce={50}
         cursorSize={100}
         isViscous={true}
-        viscous={30}
+        viscous={100}
         iterationsViscous={32}
         iterationsPoisson={32}
         resolution={0.3}
         isBounce={false}
         autoDemo={true}
         autoSpeed={0.5}
-        autoIntensity={2.2}
+        autoIntensity={1.5}
         takeoverDuration={0.25}
         autoResumeDelay={3000}
-        autoRampDuration={0.6}
+        autoRampDuration={0.2}
       />
     </div>
   );

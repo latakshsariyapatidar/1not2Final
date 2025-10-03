@@ -6,7 +6,7 @@ import {
   InitialLoadingScreen,
   HomePage, 
   AboutPage, 
-  ServicesPage, 
+  WorksPage, 
   ContactPage 
 } from "./components";
 
@@ -18,7 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
-            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/works" element={<WorksPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </PageTransition>

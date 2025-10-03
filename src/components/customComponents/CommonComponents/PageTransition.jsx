@@ -11,13 +11,16 @@ const PageTransition = ({ children }) => {
   const progressBarRef = useRef(null);
   const curtainLeftRef = useRef(null);
   const curtainRightRef = useRef(null);
+  const filmStripRef = useRef(null);
+  const scanLineRef = useRef(null);
+  const particlesRef = useRef(null);
   const prevLocation = useRef(null); // Start with null instead of current location
 
   const getPageInfo = useCallback((pathname) => {
     const pages = {
       "/": { title: "HOME", subtitle: "CREATIVE VISION" },
       "/about": { title: "ABOUT", subtitle: "OUR STORY" },
-      "/services": { title: "SERVICES", subtitle: "WHAT WE DO" },
+      "/works": { title: "WORKS", subtitle: "WHAT WE HAVE DONE" },
       "/contact": { title: "CONTACT", subtitle: "LET'S CONNECT" },
     };
     return pages[pathname] || { title: "PAGE", subtitle: "LOADING" };
@@ -27,7 +30,7 @@ const PageTransition = ({ children }) => {
     console.log('performTransition called for:', location.pathname);
     
     // Kill any existing animations first
-    gsap.killTweensOf([containerRef.current, overlayRef.current, titleRef.current, subtitleRef.current, progressBarRef.current, curtainLeftRef.current, curtainRightRef.current]);
+    gsap.killTweensOf([containerRef.current, overlayRef.current, titleRef.current, subtitleRef.current, progressBarRef.current, curtainLeftRef.current, curtainRightRef.current, filmStripRef.current, scanLineRef.current, particlesRef.current]);
     
     const container = containerRef.current;
     const overlay = overlayRef.current;
@@ -36,6 +39,9 @@ const PageTransition = ({ children }) => {
     const progressBar = progressBarRef.current;
     const curtainLeft = curtainLeftRef.current;
     const curtainRight = curtainRightRef.current;
+    const filmStrip = filmStripRef.current;
+    const scanLine = scanLineRef.current;
+    const particles = particlesRef.current;
 
     if (!container || !overlay || !title || !subtitle || !progressBar || !curtainLeft || !curtainRight) {
       console.log('Missing refs:', {
@@ -75,126 +81,207 @@ const PageTransition = ({ children }) => {
       display: 'flex', 
       opacity: 1 
     });
+    gsap.set([filmStrip, scanLine, particles], { 
+      opacity: 0,
+      clearProps: "transform,filter" 
+    });
 
-    // Create modern cinematic transition timeline
+    // Create enhanced cinematic transition timeline
     const tl = gsap.timeline({
       onStart: () => console.log('Transition animation started'),
       onComplete: () => console.log('Transition animation completed')
     });
 
-    // Phase 1: Fade out current content quickly
+    // Phase 1: Screen distortion effect
     tl.to(container, {
       opacity: 0,
-      scale: 0.98,
-      filter: "blur(2px)",
-      duration: 0.3,
+      scale: 0.95,
+      filter: "blur(3px) brightness(0.8) contrast(1.2)",
+      duration: 0.4,
       ease: "power2.out",
     })
 
-    // Phase 2: Curtain slide in effect - both curtains properly
+    // Phase 2: Film strip entrance
+    .fromTo(filmStrip, {
+      x: "-100%",
+      opacity: 0,
+    }, {
+      x: "0%",
+      opacity: 0.8,
+      duration: 0.5,
+      ease: "power3.out",
+    }, "+=0.1")
+
+    // Phase 3: Curtain slide in effect with enhanced timing
     .fromTo(curtainLeft, {
       scaleX: 0,
       transformOrigin: 'left center'
     }, {
       scaleX: 1,
-      duration: 0.4,
+      duration: 0.5,
       ease: "power3.out",
-    }, "+=0.1")
+    }, "-=0.3")
     .fromTo(curtainRight, {
       scaleX: 0,
       transformOrigin: 'right center'
     }, {
       scaleX: 1,
-      duration: 0.4,
+      duration: 0.5,
       ease: "power3.out",
-    }, "-=0.3") // Start slightly after left curtain
+    }, "-=0.4")
 
-    // Phase 3: Title entrance with modern typography effect
-    .fromTo(title, {
-      y: 60,
+    // Phase 4: Scan line effect
+    .fromTo(scanLine, {
+      x: "-100%",
       opacity: 0,
-      letterSpacing: "0.5em",
-      filter: "blur(10px)",
+    }, {
+      x: "100%",
+      opacity: 1,
+      duration: 0.8,
+      ease: "none",
+    }, "-=0.2")
+
+    // Phase 5: Particles entrance
+    .fromTo(particles, {
+      opacity: 0,
+      scale: 0,
+    }, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.6,
+      ease: "back.out(1.7)",
+    }, "-=0.4")
+
+    // Phase 6: Enhanced title entrance with glitch effect
+    .fromTo(title, {
+      y: 80,
+      opacity: 0,
+      letterSpacing: "0.8em",
+      filter: "blur(15px) brightness(0.5)",
+      scaleY: 0.8,
     }, {
       y: 0,
       opacity: 1,
       letterSpacing: "0.15em",
-      filter: "blur(0px)",
-      duration: 0.6,
+      filter: "blur(0px) brightness(1)",
+      scaleY: 1,
+      duration: 0.8,
       ease: "power3.out",
-    }, "-=0.2")
-
-    // Phase 4: Subtitle slide up
-    .fromTo(subtitle, {
-      y: 30,
-      opacity: 0,
-    }, {
-      y: 0,
-      opacity: 0.8,
-      duration: 0.5,
-      ease: "power2.out",
     }, "-=0.3")
 
-    // Phase 5: Progress bar animation
+    // Phase 7: Glitch effect on title
+    .to(title, {
+      x: "+=3",
+      duration: 0.1,
+      ease: "power2.inOut",
+      yoyo: true,
+      repeat: 3,
+    }, "-=0.2")
+
+    // Phase 8: Subtitle with typewriter effect
+    .fromTo(subtitle, {
+      y: 40,
+      opacity: 0,
+      filter: "blur(5px)",
+    }, {
+      y: 0,
+      opacity: 0.9,
+      filter: "blur(0px)",
+      duration: 0.6,
+      ease: "power2.out",
+    }, "-=0.4")
+
+    // Phase 9: Enhanced progress bar with pulsing effect
     .fromTo(progressBar, {
       scaleX: 0,
       opacity: 0,
     }, {
       scaleX: 1,
       opacity: 1,
-      duration: 0.6,
+      duration: 0.8,
       ease: "power2.out",
+    }, "-=0.3")
+
+    // Phase 10: Progress bar pulse
+    .to(progressBar, {
+      boxShadow: "0 0 30px rgba(234, 234, 234, 0.8)",
+      duration: 0.5,
+      ease: "power2.inOut",
+      yoyo: true,
+      repeat: 1,
     }, "-=0.2")
 
-    // Phase 6: Hold for effect
-    .to({}, { duration: 0.4 })
+    // Phase 11: Hold for dramatic effect
+    .to({}, { duration: 0.6 })
 
-    // Phase 7: Exit animation - text first
-    .to([title, subtitle], {
-      y: -40,
+    // Phase 12: Exit sequence with enhanced effects
+    .to(particles, {
       opacity: 0,
-      filter: "blur(5px)",
+      scale: 1.5,
       duration: 0.4,
       ease: "power2.in",
-      stagger: 0.1,
     })
+    .to([title, subtitle], {
+      y: -60,
+      opacity: 0,
+      filter: "blur(8px) brightness(1.5)",
+      duration: 0.5,
+      ease: "power2.in",
+      stagger: 0.1,
+    }, "-=0.2")
 
-    // Phase 8: Progress bar exit
+    // Phase 13: Progress bar dramatic exit
     .to(progressBar, {
       scaleX: 0,
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.in",
+    }, "-=0.3")
+
+    // Phase 14: Scan line exit
+    .to(scanLine, {
+      x: "200%",
+      opacity: 0,
+      duration: 0.5,
+      ease: "power2.in",
+    }, "-=0.2")
+
+    // Phase 15: Film strip exit
+    .to(filmStrip, {
+      x: "100%",
+      opacity: 0,
+      duration: 0.5,
+      ease: "power3.in",
+    }, "-=0.3")
+
+    // Phase 16: Curtain slide out with stagger
+    .to([curtainLeft, curtainRight], {
+      x: "-100%",
+      duration: 0.6,
+      ease: "power3.in",
+      stagger: 0.08,
+    }, "-=0.2")
+
+    // Phase 17: Hide overlay
+    .to(overlay, {
       opacity: 0,
       duration: 0.3,
       ease: "power2.in",
     }, "-=0.2")
-
-    // Phase 9: Curtain slide out - both slide to left
-    .to([curtainLeft, curtainRight], {
-      x: "-100%",
-      duration: 0.5,
-      ease: "power3.in",
-      stagger: 0.05,
-    }, "-=0.1")
-
-    // Phase 10: Hide overlay
-    .to(overlay, {
-      opacity: 0,
-      duration: 0.2,
-      ease: "power2.in",
-    }, "-=0.1")
     .set(overlay, { display: "none" })
 
-    // Phase 11: Fade in new content with slight zoom
+    // Phase 18: Enhanced content entrance
     .fromTo(container, {
       opacity: 0,
-      scale: 1.02,
-      filter: "blur(1px)",
+      scale: 1.05,
+      filter: "blur(2px) brightness(1.2)",
     }, {
       opacity: 1,
       scale: 1,
-      filter: "blur(0px)",
-      duration: 0.6,
+      filter: "blur(0px) brightness(1)",
+      duration: 0.8,
       ease: "power2.out",
-    }, "-=0.3");
+    }, "-=0.4");
 
   }, [location.pathname, getPageInfo]);
 
@@ -219,106 +306,231 @@ const PageTransition = ({ children }) => {
         {children}
       </div>
 
-      {/* Modern Cinematic Transition Overlay */}
+      {/* Enhanced Cinematic Transition Overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[99999] hidden items-center justify-center bg-[#1C1C1C]"
+        className="fixed inset-0 z-[99999] hidden items-center justify-center bg-[#1C1C1C] overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #1C1C1C 0%, #2B2B2B 50%, #1C1C1C 100%)'
+          background: 'linear-gradient(135deg, #0a0a0a 0%, #1C1C1C 25%, #2B2B2B 50%, #1C1C1C 75%, #0a0a0a 100%)'
         }}
       >
-        {/* Curtain Elements - Cinematic Gray Base */}
+        {/* Animated Film Strip */}
+        <div 
+          ref={filmStripRef}
+          className="absolute left-0 top-0 w-16 h-full z-[1] opacity-60"
+          style={{ 
+            background: 'repeating-linear-gradient(0deg, #000 0px, #000 20px, transparent 20px, transparent 40px)',
+            borderRight: '4px solid #333'
+          }}
+        />
+
+        {/* Scan Line Effect */}
+        <div 
+          ref={scanLineRef}
+          className="absolute top-0 w-1 h-full z-[10] opacity-80"
+          style={{ 
+            background: 'linear-gradient(to bottom, transparent 0%, #5227FF 20%, #FF9FFC  50%, #B19EEF  80%, transparent 100%)',
+            boxShadow: '0 0 20px #5227FF, 0 0 40px #FF9FFC'
+          }}
+        />
+
+        {/* Floating Particles */}
+        <div ref={particlesRef} className="absolute inset-0 z-[3] pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 rounded-full opacity-40"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                background: `linear-gradient(45deg, #5227FF, #FF9FFC, #B19EEF)`,
+                animation: `particle-float-${i % 4} ${6 + (i % 3)}s infinite linear`,
+                animationDelay: `${i * 0.2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Enhanced Curtain Elements */}
         <div 
           ref={curtainLeftRef}
-          className="absolute inset-0 z-[1]"
+          className="absolute inset-0 z-[4]"
           style={{ 
             transformOrigin: 'left center',
-            background: 'linear-gradient(to right, #111111 0%, #1C1C1C 50%, #2B2B2B 100%)'
+            background: 'linear-gradient(to right, #000000 0%, #111111 20%, #1C1C1C 50%, #2B2B2B 80%, #1C1C1C 100%)',
+            boxShadow: 'inset -20px 0 40px rgba(82, 39, 255, 0.1)'
           }}
         />
         <div 
           ref={curtainRightRef}
-          className="absolute inset-0 z-[1]"
+          className="absolute inset-0 z-[4]"
           style={{ 
             transformOrigin: 'right center',
-            background: 'linear-gradient(to left, #111111 0%, #1C1C1C 50%, #2B2B2B 100%)'
+            background: 'linear-gradient(to left, #000000 0%, #111111 20%, #1C1C1C 50%, #2B2B2B 80%, #1C1C1C 100%)',
+            boxShadow: 'inset 20px 0 40px rgba(255, 159, 252, 0.1)'
           }}
         />
 
-        {/* Purple Glow Overlay for Cool Transitions */}
+        {/* Multi-layered Glow Effects */}
         <div 
-          className="absolute inset-0 z-[2] opacity-40"
+          className="absolute inset-0 z-[5] opacity-30"
           style={{ 
-            background: 'radial-gradient(circle at center, #5227FF 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 30% 50%, #5227FF 0%, transparent 50%)',
             pointerEvents: 'none'
           }}
         />
-
-        {/* Pink Glow Overlay for Warm Transitions */}
         <div 
-          className="absolute inset-0 z-[2] opacity-40"
+          className="absolute inset-0 z-[5] opacity-30"
           style={{ 
-            background: 'radial-gradient(circle at center, #FF9FFC 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 70% 50%, #FF9FFC 0%, transparent 50%)',
+            pointerEvents: 'none',
+            mixBlendMode: 'screen'
+          }}
+        />
+        <div 
+          className="absolute inset-0 z-[5] opacity-20"
+          style={{ 
+            background: 'radial-gradient(circle at center, #B19EEF 0%, transparent 60%)',
             pointerEvents: 'none',
             mixBlendMode: 'overlay'
           }}
         />
 
-        {/* Content Container with higher z-index */}
+        {/* Animated Grid Pattern */}
+        <div 
+          className="absolute inset-0 z-[2] opacity-5"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(82, 39, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 159, 252, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+            animation: 'grid-move 10s linear infinite'
+          }}
+        />
+
+        {/* Content Container */}
         <div className="text-center z-[100] relative">
-          {/* Main Title */}
+          {/* Enhanced Main Title */}
           <h1
             ref={titleRef}
             className="text-6xl md:text-8xl lg:text-9xl font-black tracking-wider uppercase text-[#EAEAEA] mb-4 z-[101] relative"
             style={{
               fontFamily: '"Roboto Flex", sans-serif',
               fontWeight: 900,
+              textShadow: '0 0 20px rgba(82, 39, 255, 0.5), 0 0 40px rgba(255, 159, 252, 0.3)',
+              filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5))'
             }}
           >
             PAGE
           </h1>
 
-          {/* Subtitle */}
+          {/* Enhanced Subtitle */}
           <p
             ref={subtitleRef}
             className="text-lg md:text-xl lg:text-2xl font-light tracking-[0.3em] uppercase text-[#A0A0A0] mb-12 z-[101] relative"
             style={{
               fontFamily: '"Roboto Flex", sans-serif',
               fontWeight: 300,
+              textShadow: '0 0 10px rgba(255, 159, 252, 0.3)',
             }}
           >
             LOADING
           </p>
 
-          {/* Modern Progress Bar */}
+          {/* Enhanced Progress Bar */}
           <div className="w-64 md:w-80 lg:w-96 mx-auto z-[101] relative">
-            <div className="relative h-0.5 bg-[#3C3C3C] rounded-full overflow-hidden">
+            <div className="relative h-1 bg-[#2C2C2C] rounded-full overflow-hidden">
               <div
                 ref={progressBarRef}
-                className="absolute left-0 top-0 h-full bg-gradient-to-r from-[#EAEAEA] via-[#FFFFFF] to-[#EAEAEA] rounded-full"
+                className="absolute left-0 top-0 h-full rounded-full"
                 style={{
                   transformOrigin: 'left center',
-                  boxShadow: '0 0 20px rgba(234, 234, 234, 0.6)',
+                  background: 'linear-gradient(90deg, #5227FF 0%, #FF9FFC 50%, #B19EEF 100%)',
+                  boxShadow: '0 0 20px rgba(82, 39, 255, 0.6), 0 0 40px rgba(255, 159, 252, 0.4)',
                 }}
               />
+              {/* Progress bar glow overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse" />
             </div>
             
-            {/* Minimal accent dots */}
-            <div className="flex justify-center mt-6 space-x-2">
-              <div className="w-1 h-1 bg-[#EAEAEA] rounded-full opacity-60" />
-              <div className="w-1 h-1 bg-[#EAEAEA] rounded-full opacity-40" />
-              <div className="w-1 h-1 bg-[#EAEAEA] rounded-full opacity-20" />
+            {/* Enhanced accent indicators */}
+            <div className="flex justify-center mt-8 space-x-3">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="w-1.5 h-1.5 rounded-full"
+                  style={{
+                    background: `linear-gradient(45deg, #5227FF, #FF9FFC)`,
+                    opacity: 0.6 - (i * 0.1),
+                    animation: `pulse ${1 + i * 0.2}s infinite alternate`
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Subtle grain overlay for film effect */}
+        {/* Enhanced Film Grain */}
         <div 
-          className="absolute inset-0 opacity-5 pointer-events-none"
+          className="absolute inset-0 opacity-8 pointer-events-none z-[6]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            animation: 'noise 0.2s infinite'
           }}
         />
+
+        {/* Vignette Effect */}
+        <div 
+          className="absolute inset-0 z-[7] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0.6) 100%)'
+          }}
+        />
+
+        {/* Custom CSS Animations */}
+        <style jsx>{`
+          @keyframes particle-float-0 {
+            from { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translate(20px, -100px) rotate(360deg); opacity: 0; }
+          }
+          @keyframes particle-float-1 {
+            from { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translate(-30px, -100px) rotate(-360deg); opacity: 0; }
+          }
+          @keyframes particle-float-2 {
+            from { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translate(10px, -100px) rotate(180deg); opacity: 0; }
+          }
+          @keyframes particle-float-3 {
+            from { transform: translate(0, 100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            to { transform: translate(-15px, -100px) rotate(-180deg); opacity: 0; }
+          }
+          @keyframes grid-move {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+          }
+          @keyframes noise {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-1px, -1px); }
+            20% { transform: translate(1px, 1px); }
+            30% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+            50% { transform: translate(-1px, -1px); }
+            60% { transform: translate(1px, 1px); }
+            70% { transform: translate(-1px, 1px); }
+            80% { transform: translate(1px, -1px); }
+            90% { transform: translate(-1px, -1px); }
+          }
+        `}</style>
       </div>
     </div>
   );

@@ -20,7 +20,17 @@ const TextPressure = ({
   strokeWidth = 2,
   className = '',
 
-  minFontSize = 24
+  // Responsive text size options
+  minFontSize = 24,
+  maxFontSize = 200,
+  baseFontSize = null, // If provided, uses this as base instead of auto-calculation
+  responsiveMultiplier = 1, // Multiplier for responsive scaling
+  breakpoints = {
+    sm: 0.6,    // Mobile screens
+    md: 0.8,    // Tablet screens  
+    lg: 1.0,    // Desktop screens
+    xl: 1.2,    // Large desktop screens
+  }
 }) => {
   const containerRef = useRef(null);
   const titleRef = useRef(null);
@@ -39,6 +49,16 @@ const TextPressure = ({
     const dx = b.x - a.x;
     const dy = b.y - a.y;
     return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Get responsive multiplier based on screen size
+  const getResponsiveMultiplier = () => {
+    const width = window.innerWidth;
+    
+    if (width < 640) return breakpoints.sm; // Mobile
+    if (width < 768) return breakpoints.md; // Tablet
+    if (width < 1024) return breakpoints.lg; // Desktop
+    return breakpoints.xl; // Large desktop
   };
 
   useEffect(() => {
@@ -73,9 +93,20 @@ const TextPressure = ({
     if (!containerRef.current || !titleRef.current) return;
 
     const { width: containerW, height: containerH } = containerRef.current.getBoundingClientRect();
+    const responsiveMulti = getResponsiveMultiplier();
 
-    let newFontSize = containerW / (chars.length / 2);
-    newFontSize = Math.max(newFontSize, minFontSize);
+    let newFontSize;
+
+    if (baseFontSize) {
+      // Use provided base font size with responsive multiplier
+      newFontSize = baseFontSize * responsiveMulti * responsiveMultiplier;
+    } else {
+      // Auto-calculate based on container width and character count
+      newFontSize = (containerW / (chars.length / 2)) * responsiveMulti * responsiveMultiplier;
+    }
+
+    // Clamp font size between min and max values
+    newFontSize = Math.max(minFontSize, Math.min(newFontSize, maxFontSize));
 
     setFontSize(newFontSize);
     setScaleY(1);
@@ -98,7 +129,7 @@ const TextPressure = ({
     window.addEventListener('resize', setSize);
     return () => window.removeEventListener('resize', setSize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scale, text]);
+  }, [scale, text, baseFontSize, responsiveMultiplier, breakpoints]);
 
   useEffect(() => {
     let rafId;
