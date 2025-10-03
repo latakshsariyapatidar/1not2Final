@@ -290,9 +290,29 @@ const HomePage = () => {
 
             <div className="w-32 h-0.5 bg-gradient-to-r from-[#5227FF] via-[#FF9FFC] to-[#B19EEF] mx-auto mb-8 opacity-60" />
 
-            <p className="text-[#A0A0A0] text-xl font-light tracking-wider opacity-90 mb-8">
-              Making Every Story - <span className="font-light italic underline underline-offset-4">The Story</span>
-            </p>
+            <div className="mb-8">
+              <TextPressure
+                text="Making Every Story - The Story"
+                flex={true}
+                alpha={true}
+                stroke={false}
+                width={true}
+                weight={false}
+                italic={true}
+                textColor="#A0A0A0"
+                strokeColor="#ff0000"
+                baseFontSize={24}
+                minFontSize={16}
+                maxFontSize={32}
+                responsiveMultiplier={1.0}
+                breakpoints={{
+                  sm: 0.7,
+                  md: 0.8,
+                  lg: 1.0,
+                  xl: 1.2,
+                }}
+              />
+            </div>
 
 
           </div>
