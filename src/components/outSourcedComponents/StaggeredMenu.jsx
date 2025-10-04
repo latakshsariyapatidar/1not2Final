@@ -1,7 +1,81 @@
 import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { gsap } from 'gsap';
+import { useAuth } from '../../hooks/useAuth';
 import TextPressure from '../outSourcedComponents/TextPressure';
+
+// Component to handle authentication section in menu
+const AuthSection = ({ accentColor }) => {
+  const { isAuthenticated, userData, signOut, isLoading } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Reload the website to show the loading screen
+      window.location.reload();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <>
+        <h3 className="sm-login-title m-0 text-base font-medium" style={{ color: accentColor || '#ff0000' }}>
+          Account
+        </h3>
+        <div className="flex items-center justify-center py-4">
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2" style={{ borderColor: accentColor || '#ff0000' }}></div>
+        </div>
+      </>
+    );
+  }
+
+  if (isAuthenticated && userData) {
+    const displayName = userData.displayName || userData.email?.split('@')[0] || 'User';
+    
+    return (
+      <>
+        <h3 className="sm-login-title m-0 text-base font-medium" style={{ color: accentColor || '#ff0000' }}>
+          Welcome
+        </h3>
+        <div className="flex flex-col gap-3">
+          <div className="sm-user-info">
+            <p className="text-lg font-semibold text-black mb-2">{displayName}</p>
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="sm-signout-btn inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-[1.02] border-none cursor-pointer"
+          >
+            Sign Out
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <h3 className="sm-login-title m-0 text-base font-medium" style={{ color: accentColor || '#ff0000' }}>
+        Account
+      </h3>
+      <div className="flex flex-col gap-2">
+        <Link
+          to="/login"
+          className="sm-login-btn inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#5227FF] to-[#FF9FFC] text-white text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-[#5227FF]/25 transition-all duration-300 transform hover:scale-[1.02] no-underline"
+        >
+          Sign In
+        </Link>
+        <Link
+          to="/signup"
+          className="sm-signup-btn inline-flex items-center justify-center px-4 py-2 bg-transparent border border-white/30 text-[#111] text-sm font-semibold rounded-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 transform hover:scale-[1.02] no-underline"
+        >
+          Sign Up
+        </Link>
+      </div>
+    </>
+  );
+};
 
 export const StaggeredMenu = ({
   position = 'right',
@@ -10,6 +84,7 @@ export const StaggeredMenu = ({
   socialItems = [],
   displaySocials = true,
   displayItemNumbering = true,
+  displayLogin = false,
   className,
   logoUrl = '/src/assets/logos/reactbits-gh-white.svg',
   menuButtonColor = '#fff',
@@ -520,6 +595,12 @@ export const StaggeredMenu = ({
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {displayLogin && (
+              <div className="sm-login mt-6 pt-6 border-t border-white/20 flex flex-col gap-3" aria-label="Account">
+                <AuthSection accentColor={accentColor} />
               </div>
             )}
           </div>

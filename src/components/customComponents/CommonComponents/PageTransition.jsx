@@ -23,7 +23,7 @@ const PageTransition = ({ children }) => {
       "/": { title: "HOME", subtitle: "CREATIVE VISION" },
       "/about": { title: "ABOUT", subtitle: "OUR STORY" },
       "/works": { title: "WORKS", subtitle: "PORTFOLIO" },
-      "/teams": { title: "TEAMS", subtitle: "MEET OUR CREW" },
+      "/teams": { title: "TEAM", subtitle: "MEET OUR CREW" },
       "/contact": { title: "CONTACT", subtitle: "LET'S CONNECT" },
     };
     return pages[pathname] || { title: "PAGE", subtitle: "LOADING" };

@@ -8,7 +8,7 @@ function Header() {
     { label: "Home", ariaLabel: "Go to home page", link: "/" },
     { label: "About", ariaLabel: "Learn about us", link: "/about" },
     { label: "Works", ariaLabel: "View our works", link: "/works" },
-    { label: "Teams", ariaLabel: "Meet our team", link: "/teams" },
+    { label: "Teamll", ariaLabel: "Meet our team", link: "/teams" },
     { label: "Contact", ariaLabel: "Get in touch", link: "/contact" },
   ];
 
@@ -48,6 +48,7 @@ function Header() {
         items={menuItems}
         socialItems={socialItems}
         displaySocials={true}
+        displayLogin={true}
         displayItemNumbering={true}
         menuButtonColor="#EAEAEA"
         openMenuButtonColor="#1C1C1C"
