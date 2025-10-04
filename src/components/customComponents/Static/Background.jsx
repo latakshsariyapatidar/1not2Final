@@ -6,7 +6,7 @@ function Background() {
     <div className="h-[100dvh] w-full absolute backdrop-blur-2xl blur-3xl">
       <LiquidEther
         colors={[ '#5227FF', '#FF9FFC', '#B19EEF' ]}
-        mouseForce={50}
+        mouseForce={10}
         cursorSize={100}
         isViscous={true}
         viscous={100}

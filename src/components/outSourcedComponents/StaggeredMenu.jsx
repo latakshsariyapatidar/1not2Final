@@ -25,8 +25,6 @@ export const StaggeredMenu = ({
   const prevLocationRef = useRef(location.pathname);
 
   const panelRef = useRef(null);
-  const preLayersRef = useRef(null);
-  const preLayerElsRef = useRef([]);
 
   const plusHRef = useRef(null);
   const plusVRef = useRef(null);
@@ -47,10 +45,14 @@ export const StaggeredMenu = ({
 
   const itemEntranceTweenRef = useRef(null);
 
+  // Prelayers refs for staggered animation
+  const preLayersRef = useRef(null);
+  const preLayerElsRef = useRef([]);
+
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       const panel = panelRef.current;
-      const preContainer = preLayersRef.current;
+      const prelayers = preLayersRef.current;
 
       const plusH = plusHRef.current;
       const plusV = plusVRef.current;
@@ -59,14 +61,15 @@ export const StaggeredMenu = ({
 
       if (!panel || !plusH || !plusV || !icon || !textInner) return;
 
-      let preLayers = [];
-      if (preContainer) {
-        preLayers = Array.from(preContainer.querySelectorAll('.sm-prelayer'));
-      }
-      preLayerElsRef.current = preLayers;
-
       const offscreen = position === 'left' ? -100 : 100;
-      gsap.set([panel, ...preLayers], { xPercent: offscreen });
+      gsap.set(panel, { xPercent: offscreen });
+
+      // Setup prelayers if they exist
+      if (prelayers) {
+        const layers = Array.from(prelayers.children);
+        preLayerElsRef.current = layers;
+        gsap.set(layers, { xPercent: offscreen });
+      }
 
       gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
       gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
@@ -106,6 +109,7 @@ export const StaggeredMenu = ({
 
     const tl = gsap.timeline({ paused: true });
 
+    // Animate prelayers first for staggered effect
     layerStates.forEach((ls, i) => {
       tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
     });
@@ -187,31 +191,46 @@ export const StaggeredMenu = ({
     const layers = preLayerElsRef.current;
     if (!panel) return;
 
-    const all = [...layers, panel];
     closeTweenRef.current?.kill();
 
     const offscreen = position === 'left' ? -100 : 100;
 
-    closeTweenRef.current = gsap.to(all, {
+    const tl = gsap.timeline();
+
+    // Animate panel out first
+    tl.to(panel, {
       xPercent: offscreen,
       duration: 0.32,
       ease: 'power3.in',
-      overwrite: 'auto',
-      onComplete: () => {
-        const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
-        if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
-
-        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
-        if (numberEls.length) gsap.set(numberEls, { ['--sm-num-opacity']: 0 });
-
-        const socialTitle = panel.querySelector('.sm-socials-title');
-        const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
-        if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
-        if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
-
-        busyRef.current = false;
-      }
+      overwrite: 'auto'
     });
+
+    // Then animate layers out in reverse order
+    if (layers.length) {
+      tl.to(layers.slice().reverse(), {
+        xPercent: offscreen,
+        duration: 0.25,
+        ease: 'power3.in',
+        stagger: 0.03
+      }, 0.05);
+    }
+
+    tl.call(() => {
+      const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
+      if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
+
+      const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+      if (numberEls.length) gsap.set(numberEls, { ['--sm-num-opacity']: 0 });
+
+      const socialTitle = panel.querySelector('.sm-socials-title');
+      const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
+      if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
+      if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
+
+      busyRef.current = false;
+    });
+
+    closeTweenRef.current = tl;
   }, [position]);
 
   const animateIcon = useCallback(opening => {
@@ -339,26 +358,19 @@ export const StaggeredMenu = ({
         data-position={position}
         data-open={open || undefined}
       >
+        {/* Transparent prelayers for staggered animation */}
         <div
           ref={preLayersRef}
-          className="sm-prelayers absolute top-0 right-0 bottom-0 pointer-events-none z-[5]"
-          aria-hidden="true"
+          className="sm-prelayers absolute top-0 right-0 bottom-0 w-[clamp(260px,38vw,420px)] pointer-events-none z-5"
+          style={{ [position === 'left' ? 'left' : 'right']: 0 }}
         >
-          {(() => {
-            const raw = colors && colors.length ? colors.slice(0, 4) : ['#1e1e22', '#35353c'];
-            let arr = [...raw];
-            if (arr.length >= 3) {
-              const mid = Math.floor(arr.length / 2);
-              arr.splice(mid, 1);
-            }
-            return arr.map((c, i) => (
-              <div
-                key={i}
-                className="sm-prelayer absolute top-0 right-0 h-full w-full translate-x-0"
-                style={{ background: c }}
-              />
-            ));
-          })()}
+          {colors.map((color, i) => (
+            <div
+              key={i}
+              className="sm-prelayer absolute top-0 right-0 h-full w-full transform translate-x-0"
+              style={{ background: 'transparent' }}
+            />
+          ))}
         </div>
 
         <header
@@ -419,7 +431,7 @@ export const StaggeredMenu = ({
         {/* Backdrop overlay - close menu when clicking outside */}
         {open && (
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 z-5"
+            className="fixed inset-0 z-5 backdrop-blur-md"
             onClick={() => {
               setOpen(false);
               openRef.current = false;
@@ -436,8 +448,11 @@ export const StaggeredMenu = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full bg-white flex flex-col p-[6em_2em_2em_2em] overflow-y-auto z-10 backdrop-blur-[12px]"
-          style={{ WebkitBackdropFilter: 'blur(12px)' }}
+          className="staggered-menu-panel absolute top-0 right-0 h-full flex flex-col p-[6em_2em_2em_2em] overflow-y-auto z-10 backdrop-blur-3xl"
+          style={{ 
+            WebkitBackdropFilter: 'blur(80px)',
+            backgroundColor: 'rgba(255, 255, 255, 1)'
+          }}
           aria-hidden={!open}
           inert={!open || undefined}
           onClick={(e) => {
@@ -527,7 +542,7 @@ export const StaggeredMenu = ({
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
 .sm-scope .sm-line { display: none !important; }
-.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: white; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
+.sm-scope .staggered-menu-panel { position: absolute; top: 0; right: 0; width: clamp(260px, 38vw, 420px); height: 100%; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: flex; flex-direction: column; padding: 6em 2em 2em 2em; overflow-y: auto; z-index: 10; }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: absolute; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
