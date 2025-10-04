@@ -7,7 +7,8 @@ import {
   HomePage, 
   AboutPage, 
   WorksPage, 
-  ContactPage 
+  ContactPage,
+  TeamsPage
 } from "./components";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/works" element={<WorksPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/teams" element={<TeamsPage />} />
           </Routes>
         </PageTransition>
       </Layout>

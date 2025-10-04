@@ -8,6 +8,7 @@ function Header() {
     { label: "Home", ariaLabel: "Go to home page", link: "/" },
     { label: "About", ariaLabel: "Learn about us", link: "/about" },
     { label: "Works", ariaLabel: "View our works", link: "/works" },
+    { label: "Teams", ariaLabel: "Meet our team", link: "/teams" },
     { label: "Contact", ariaLabel: "Get in touch", link: "/contact" },
   ];
 
