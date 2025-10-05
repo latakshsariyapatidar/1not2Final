@@ -7,6 +7,7 @@ import TextPressure from '../outSourcedComponents/TextPressure';
 // Component to handle authentication section in menu
 const AuthSection = ({ accentColor }) => {
   const { isAuthenticated, userData, signOut, isLoading } = useAuth();
+  const [imageError, setImageError] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -17,6 +18,15 @@ const AuthSection = ({ accentColor }) => {
       console.error('Error signing out:', error);
     }
   };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
+  // Reset image error when userData changes
+  useEffect(() => {
+    setImageError(false);
+  }, [userData?.photoURL]);
 
   if (isLoading) {
     return (
@@ -33,6 +43,18 @@ const AuthSection = ({ accentColor }) => {
 
   if (isAuthenticated && userData) {
     const displayName = userData.displayName || userData.email?.split('@')[0] || 'User';
+    const profilePicture = userData.photoURL && !imageError ? userData.photoURL : null;
+    
+    // Default avatar SVG for users without profile pictures
+    const defaultAvatar = (
+      <svg 
+        className="w-6 h-6 text-gray-500" 
+        fill="currentColor" 
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    );
     
     return (
       <>
@@ -40,8 +62,30 @@ const AuthSection = ({ accentColor }) => {
           Welcome
         </h3>
         <div className="flex flex-col gap-3">
-          <div className="sm-user-info">
-            <p className="text-lg font-semibold text-black mb-2">{displayName}</p>
+          <div className="sm-user-info flex items-center gap-3">
+            {/* Profile Picture */}
+            <div className="flex-shrink-0">
+              {profilePicture ? (
+                <img
+                  src={profilePicture}
+                  alt={`${displayName}'s profile`}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
+                  onError={handleImageError}
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full default-avatar flex items-center justify-center">
+                  {defaultAvatar}
+                </div>
+              )}
+            </div>
+            
+            {/* User Info */}
+            <div className="flex-grow min-w-0">
+              <p className="text-lg font-semibold text-black mb-1 truncate">{displayName}</p>
+              {userData.email && (
+                <p className="text-xs text-gray-500 truncate">{userData.email}</p>
+              )}
+            </div>
           </div>
           <button
             onClick={handleSignOut}
@@ -647,6 +691,10 @@ export const StaggeredMenu = ({
 .sm-scope .sm-panel-item:hover { color: var(--sm-accent, #ff0000); }
 .sm-scope .sm-panel-list[data-numbering] { counter-reset: smItem; }
 .sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.1em; right: 3.2em; font-size: 18px; font-weight: 400; color: var(--sm-accent, #ff0000); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); }
+.sm-scope .sm-user-info { display: flex; align-items: center; gap: 0.75rem; }
+.sm-scope .sm-user-info img { border-radius: 50%; object-fit: cover; transition: transform 0.2s ease; }
+.sm-scope .sm-user-info img:hover { transform: scale(1.05); }
+.sm-scope .sm-user-info .default-avatar { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border: 1px solid #d1d5db; }
 @media (max-width: 1024px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(100%); } }
 @media (max-width: 640px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } .sm-scope .staggered-menu-wrapper[data-open] .sm-logo-img { filter: invert(100%); } }
       `}</style>

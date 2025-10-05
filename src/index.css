@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Enhanced smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Keyframes for fade in/out animation */
 @keyframes fadeInOut {
   0%, 100% {

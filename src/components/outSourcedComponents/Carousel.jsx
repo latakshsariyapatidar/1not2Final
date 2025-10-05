@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, useMotionValue, useTransform } from 'motion/react';
 // replace icons with your own if needed
 import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from 'react-icons/fi';

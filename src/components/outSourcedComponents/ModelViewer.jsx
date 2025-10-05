@@ -74,13 +74,19 @@ const ModelInner = ({
   const cHov = useRef({ x: 0, y: 0 });
 
   const ext = useMemo(() => url.split('.').pop().toLowerCase(), [url]);
+  
+  // Load all possible content types unconditionally
+  const gltfScene = useGLTF(url).scene;
+  const fbxModel = useFBX(url);
+  const objModel = useLoader(OBJLoader, url);
+  
   const content = useMemo(() => {
-    if (ext === 'glb' || ext === 'gltf') return useGLTF(url).scene.clone();
-    if (ext === 'fbx') return useFBX(url).clone();
-    if (ext === 'obj') return useLoader(OBJLoader, url).clone();
+    if (ext === 'glb' || ext === 'gltf') return gltfScene?.clone();
+    if (ext === 'fbx') return fbxModel?.clone();
+    if (ext === 'obj') return objModel?.clone();
     console.error('Unsupported format:', ext);
     return null;
-  }, [url, ext]);
+  }, [ext, gltfScene, fbxModel, objModel]);
 
   const pivotW = useRef(new THREE.Vector3());
   useLayoutEffect(() => {
