@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
@@ -6,7 +6,6 @@ import Background from "../Static/Background";
 import TextPressure from "../../outSourcedComponents/TextPressure";
 
 const AboutPage = () => {
-  const [activeService, setActiveService] = useState(0);
 
   // Services data for our modern minimal implementation
   const services = [
@@ -210,7 +209,6 @@ const AboutPage = () => {
                     transition={{ duration: 0.6, delay: index * 0.1 }}
                     viewport={{ once: true }}
                     whileHover={{ y: -8 }}
-                    onHoverStart={() => setActiveService(index)}
                     className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl sm:rounded-2xl p-6 sm:p-8 cursor-pointer transition-all duration-500 hover:bg-white/10 hover:border-white/20 hover:shadow-2xl hover:shadow-purple-500/10"
                   >
                     {/* Service Icon */}

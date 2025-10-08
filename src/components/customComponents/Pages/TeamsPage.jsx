@@ -1,170 +1,246 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
+import ChromaGrid from "../../outSourcedComponents/ChromaGrid";
+import Background from "../Static/Background";
+import TextPressure from "../../outSourcedComponents/TextPressure";
 
 const TeamsPage = () => {
+  // Team members data - production team
+  const teamMembers = [
+    {
+      image: "https://lh3.googleusercontent.com/pw/AP1GczMuGB4WV0untZS9TkFwUOEcowydtBeJNqmaK3nm0oxsqKq6jfadc4ExWkbxKcInwtBIDADa3QmzZ7_jpiLzYmqxIOaLL0Al_9OtCvrkH2SsawEu4tr-0V05Nqm3XVODfS9DRzlQEc4mWtixdqWW4zvAXw=w1379-h917-s-no-gm?authuser=0",
+      title: "Lataksh Sariya",
+      subtitle: "Technical Lead (Web)",
+      handle: "@lataksh_sariya",
+      borderColor: "#5227FF",
+      gradient: "linear-gradient(145deg, #5227FF, #000)",
+      location: "Indore",
+      url: "https://github.com/latakshsariyapatidar",
+      bio: "Building and running our digital home."
+    },
+    
+  ];
+
+
   return (
-    <div className="w-full h-screen flex items-center justify-center text-[#EAEAEA] relative overflow-hidden">
-      {/* Background network pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Connection lines */}
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute opacity-10"
-            style={{
-              left: `${10 + Math.random() * 80}%`,
-              top: `${10 + Math.random() * 80}%`,
-              width: `${50 + Math.random() * 100}px`,
-              height: '2px',
-              background: `linear-gradient(90deg, ${
-                i % 3 === 0 
-                  ? '#5227FF' 
-                  : i % 3 === 1 
-                  ? '#FF9FFC' 
-                  : '#B19EEF'
-              }, transparent)`,
-              transform: `rotate(${Math.random() * 360}deg)`,
-              animation: `pulse ${3 + Math.random() * 2}s infinite ease-in-out`,
-              animationDelay: `${i * 0.3}s`,
-            }}
-          />
-        ))}
-        
-        {/* Team member avatars placeholder */}
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={`avatar-${i}`}
-            className="absolute w-8 h-8 rounded-full border-2 opacity-20"
-            style={{
-              left: `${15 + Math.random() * 70}%`,
-              top: `${15 + Math.random() * 70}%`,
-              borderColor: i % 3 === 0 
-                ? '#5227FF' 
-                : i % 3 === 1 
-                ? '#FF9FFC' 
-                : '#B19EEF',
-              background: `radial-gradient(circle, ${
-                i % 3 === 0 
-                  ? 'rgba(82, 39, 255, 0.1)' 
-                  : i % 3 === 1 
-                  ? 'rgba(255, 159, 252, 0.1)' 
-                  : 'rgba(177, 158, 239, 0.1)'
-              }, transparent)`,
-              animation: `float ${4 + Math.random() * 3}s infinite ease-in-out`,
-              animationDelay: `${i * 0.5}s`,
-            }}
-          />
-        ))}
+    <div
+      className="relative min-h-screen text-white overflow-x-hidden"
+      style={{
+        fontFamily: "Compressa",
+      }}
+    >
+      {/* Background Layer */}
+      <div className="fixed inset-0 z-0">
+        <Background />
+        {/* Cinematic overlay gradients */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40"></div>
       </div>
 
-      <div className="text-center max-w-4xl mx-auto px-8 z-10">
-        {/* Main heading */}
-        <div className="mb-8">
-          <h1 className="text-6xl md:text-8xl font-black uppercase tracking-wider mb-4 bg-gradient-to-r from-[#5227FF] via-[#FF9FFC] to-[#B19EEF] bg-clip-text text-transparent">
-            Meet Our
-          </h1>
-          <h1 className="text-6xl md:text-8xl font-black uppercase tracking-wider mb-6 bg-gradient-to-r from-[#B19EEF] via-[#5227FF] to-[#FF9FFC] bg-clip-text text-transparent">
-            Team
-          </h1>
-        </div>
-
-        {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-gray-300 mb-8 font-light tracking-wide">
-          Team profiles are currently under development
-        </p>
-
-        {/* Description */}
-        <p className="text-lg text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-          We're preparing detailed profiles of our amazing team members. Soon you'll get to know the creative minds behind our incredible productions!
-        </p>
-
-        {/* Team preview cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
-          {[
-            { role: 'Creative Director', specialty: 'Vision & Strategy' },
-            { role: 'Production Lead', specialty: 'Project Management' },
-            { role: 'Technical Expert', specialty: 'Post-Production' }
-          ].map((member, i) => (
-            <div 
-              key={i}
-              className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10 hover:border-white/20 transition-all duration-300"
-            >
-              <div 
-                className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold"
-                style={{
-                  background: `linear-gradient(135deg, ${
-                    i === 0 
-                      ? '#5227FF, #FF9FFC' 
-                      : i === 1 
-                      ? '#FF9FFC, #B19EEF' 
-                      : '#B19EEF, #5227FF'
-                  })`,
-                }}
-              >
-                ?
-              </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">{member.role}</h3>
-              <p className="text-sm text-gray-400">{member.specialty}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Coming soon indicator */}
-        <div className="flex justify-center items-center space-x-3 mb-12">
-          <div className="text-sm text-gray-500">Profiles coming soon</div>
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="w-2 h-2 rounded-full"
-              style={{
-                background: 'linear-gradient(45deg, #5227FF, #FF9FFC)',
-                animation: `bounce 1.5s infinite ease-in-out`,
-                animationDelay: `${i * 0.3}s`
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Back to home button */}
-        <Link 
-          to="/" 
-          className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#5227FF] via-[#FF9FFC] to-[#B19EEF] text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-[#5227FF]/25 transition-all duration-300 transform hover:scale-105"
+      {/* Content Layer */}
+      <div className="relative z-20">
+        {/* Hero Section */}
+        <motion.section 
+          className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
         >
-          ← Back to Home
-        </Link>
+          <div className="relative z-30 text-center max-w-7xl mx-auto w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+            >
+              {/* Main Title with TextPressure */}
+              <div className="mb-8 sm:mb-12 overflow-hidden px-2">
+                <TextPressure
+                  text="MEET THE"
+                  className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold uppercase tracking-[0.15em] mb-4"
+                  style={{
+                    fontFamily: "'Compressa', sans-serif",
+                    color: "white",
+                    maxWidth: "100%",
+                  }}
+                  pressureConfig={{
+                    maxPressure: 0.5,
+                    sensitivity: 1.5,
+                    baseFontWeight: 300,
+                    maxFontWeight: 600,
+                  }}
+                />
+                <TextPressure
+                  text="CREATORS"
+                  className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold uppercase tracking-[0.15em]"
+                  style={{
+                    fontFamily: "'Compressa', sans-serif",
+                    background: "linear-gradient(135deg, #5227FF, #FF9FFC, #B19EEF)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    maxWidth: "100%",
+                  }}
+                  pressureConfig={{
+                    maxPressure: 0.5,
+                    sensitivity: 1.5,
+                    baseFontWeight: 300,
+                    maxFontWeight: 600,
+                  }}
+                />
+              </div>
+
+              {/* Subtitle */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="text-base sm:text-lg lg:text-xl text-gray-300 font-light tracking-wide max-w-3xl mx-auto mb-12 sm:mb-16 px-4"
+              >
+                A collective of passionate storytellers, visual artists, and technical wizards
+                <br className="hidden sm:block" />
+                united by one vision: to create cinematic magic
+              </motion.p>
+
+
+
+              {/* Scroll Indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.8 }}
+                className="flex flex-col items-center gap-3"
+              >
+                <span className="text-sm text-gray-400 uppercase tracking-widest">Meet Our Team</span>
+                <motion.div
+                  animate={{ y: [0, 10, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="text-2xl text-purple-400"
+                >
+                  ↓
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Team Section with ChromaGrid */}
+        <section className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Section Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-center mb-16 sm:mb-20 overflow-hidden"
+            >
+              <div className="relative overflow-hidden px-2">
+                <TextPressure
+                  text="OUR TEAM"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light uppercase tracking-[0.2em] block max-w-full"
+                  style={{
+                    fontFamily: "'Compressa', sans-serif",
+                    color: "white",
+                    maxWidth: "100%",
+                  }}
+                  pressureConfig={{
+                    maxPressure: 0.4,
+                    sensitivity: 1.2,
+                    baseFontWeight: 200,
+                    maxFontWeight: 500,
+                  }}
+                />
+              </div>
+
+            </motion.div>
+
+            {/* ChromaGrid Team Display */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="relative bg-transparent"
+              style={{ minHeight: "800px" }}
+            >
+              <ChromaGrid
+                items={teamMembers}
+                radius={350}
+                damping={0.4}
+                fadeOut={0.7}
+                ease="power3.out"
+                className="py-8"
+              />
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Call to Action Section */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          viewport={{ once: true }}
+          className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light mb-6 sm:mb-8 leading-tight">
+                Want to work with us?
+              </h2>
+              <p className="text-lg sm:text-xl text-gray-300 mb-10 sm:mb-12 font-light leading-relaxed px-4">
+                We're always looking for talented individuals who share our passion
+                <br className="hidden sm:block" />
+                for storytelling and cinematic excellence
+              </p>
+              
+              <motion.a
+                href="/contact"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-flex items-center gap-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-10 sm:px-12 py-4 sm:py-5 rounded-2xl text-base sm:text-lg font-medium uppercase tracking-wider transition-all duration-300 shadow-lg shadow-purple-500/30"
+              >
+                Get In Touch
+                <span className="text-xl sm:text-2xl">→</span>
+              </motion.a>
+            </motion.div>
+          </div>
+        </motion.section>
       </div>
 
-      {/* Custom animations */}
+      {/* Custom Styles */}
       <style jsx>{`
-        @keyframes float {
-          0%, 100% { 
-            transform: translateY(0px) scale(1); 
-            opacity: 0.2; 
-          }
-          50% { 
-            transform: translateY(-10px) scale(1.05); 
-            opacity: 0.4; 
-          }
+        @font-face {
+          font-family: "Compressa";
+          src: url("https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2")
+            format("woff2");
+          font-style: normal;
+          font-weight: 100 900;
+          font-display: swap;
         }
-        @keyframes pulse {
-          0%, 100% { 
-            opacity: 0.1; 
-            transform: scaleX(1); 
-          }
-          50% { 
-            opacity: 0.3; 
-            transform: scaleX(1.1); 
-          }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
         }
-        @keyframes bounce {
-          0%, 100% { 
-            transform: translateY(0px); 
-            opacity: 0.7; 
-          }
-          50% { 
-            transform: translateY(-8px); 
-            opacity: 1; 
-          }
+
+        ::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(135deg, #5227ff, #ff9ffc);
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(135deg, #ff9ffc, #5227ff);
         }
       `}</style>
     </div>
