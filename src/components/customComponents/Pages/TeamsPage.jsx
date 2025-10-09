@@ -10,7 +10,7 @@ const TeamsPage = () => {
   const teamMembers = [
     {
       image:
-        "public/TeamMembers/krishnaw.jpg",
+        "/TeamMembers/krishnaw.jpg",
       title: "Krishna Mishra",
       subtitle: "Founder · CEO · Actor",
       handle: "@krishnamishra_2329",
@@ -20,7 +20,7 @@ const TeamsPage = () => {
       bio: "Visionary behind 1not2 Production, leading creative and performance direction.",
     },
     {
-      image: "public/TeamMembers/",
+      image: "/TeamMembers/",
       title: "Shashank",
       subtitle: "Director",
       handle: "@Perushashank",
@@ -31,7 +31,7 @@ const TeamsPage = () => {
     },
     {
       image:
-        "public/TeamMembers/VedantGhodke.jpg",
+        "/TeamMembers/VedantGhodke.jpg",
       title: "Vedant Ghodke",
       subtitle: "Creative Head",
       handle: "@_vedant_ghodke",
@@ -42,7 +42,7 @@ const TeamsPage = () => {
     },
     {
       image:
-        "public/TeamMembers/Silus.jpg",
+        "/TeamMembers/Silus.jpg",
       title: "SILAS",
       subtitle: "Cinematographer · Camerahandler",
       handle: "@Staniz_k4",
@@ -52,7 +52,7 @@ const TeamsPage = () => {
       bio: "Capturing motion and emotion through the perfect frame.",
     },
     {
-      image: "public/TeamMembers/ricky.jpg",
+      image: "/TeamMembers/ricky.jpg",
       title: "Penumaka Ricky Charan",
       subtitle: "Assistant Cinematographer",
       handle: "@rickycharan_rc",
@@ -62,7 +62,7 @@ const TeamsPage = () => {
       bio: "Supporting the vision from behind the lens.",
     },
     {
-      image: "public/TeamMembers/Lataksh.jpg",
+      image: "/TeamMembers/Lataksh.jpg",
       title: "Lataksh Sariya",
       subtitle: "Technical Lead (Web)",
       handle: "@lataksh_sariya",
@@ -73,7 +73,7 @@ const TeamsPage = () => {
     },
     {
       image:
-        "public/TeamMembers/rushikesh.jpg",
+        "/TeamMembers/rushikesh.jpg",
       title: "Rushikesh Deshmukh",
       subtitle: "Music Director",
       handle: "@rusheeesh, @thedumbrooh",
@@ -84,7 +84,7 @@ const TeamsPage = () => {
     },
     {
       image:
-        "public/TeamMembers/aayush.jpg",
+        "/TeamMembers/aayush.jpg",
       title: "Ayush Raj",
       subtitle: "Editor",
       handle: "@itsxayush.raj",
@@ -95,7 +95,7 @@ const TeamsPage = () => {
     },
     {
       image:
-        "public/TeamMembers/Ashmit.webp",
+        "/TeamMembers/Ashmit.webp",
       title: "Ashmit Singh",
       subtitle: "Writer",
       handle: "@ashmit0712_",
@@ -106,7 +106,7 @@ const TeamsPage = () => {
     },
      {
       image:
-        "public/TeamMembers/sujal.jpg",
+        "/TeamMembers/sujal.jpg",
       title: "Sujal",
       subtitle: "Assistant Director",
       handle: "@_sujal.3012",

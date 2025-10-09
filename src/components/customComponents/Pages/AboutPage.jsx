@@ -182,7 +182,7 @@ const AboutPage = () => {
                   <div className="aspect-square bg-gradient-to-br from-white/10 to-white/5 rounded-2xl sm:rounded-3xl backdrop-blur-sm border border-white/20 flex items-center justify-center relative overflow-hidden">
                     <img
                       className="w-full h-full object-cover rounded-2xl sm:rounded-3xl"
-                      src="/color_logo.jpg"
+                      src="https://www.1not2production.com/color_logo.jpg"
                       alt="1not2 Productions Logo"
                     />
                   </div>
