@@ -20,6 +20,17 @@ const TeamsPage = () => {
       bio: "Visionary behind 1not2 Production, leading creative and performance direction.",
     },
     {
+      image:
+        "/TeamMembers/sahil.jpg",
+      title: "Sahil Suman",
+      subtitle: "Cinematographer - Director",
+      handle: "@@_bakri.slayer_",
+      borderColor: "#FF7B00",
+      gradient: "linear-gradient(145deg, #FF7B00, #000)",
+      url: "https://in.linkedin.com/in/sahil-suman-6aa242226",
+      bio: "Leading creative and performance direction.",
+    },
+    {
       image: "/TeamMembers/",
       title: "Shashank",
       subtitle: "Director",
