@@ -9,7 +9,7 @@ const TeamsPage = () => {
   // Team members data - production team
   const teamMembers = [
     {
-      image: "https://lh3.googleusercontent.com/pw/AP1GczMuGB4WV0untZS9TkFwUOEcowydtBeJNqmaK3nm0oxsqKq6jfadc4ExWkbxKcInwtBIDADa3QmzZ7_jpiLzYmqxIOaLL0Al_9OtCvrkH2SsawEu4tr-0V05Nqm3XVODfS9DRzlQEc4mWtixdqWW4zvAXw=w1379-h917-s-no-gm?authuser=0",
+      image: "public/TeamMembers/Lataksh.jpg",
       title: "Lataksh Sariya",
       subtitle: "Technical Lead (Web)",
       handle: "@lataksh_sariya",
