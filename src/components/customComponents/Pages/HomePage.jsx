@@ -175,7 +175,7 @@ const HomePage = () => {
 
                   {/* Movie Title */}
                   <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight">
-                    Kadi Dark Kadi
+                    Kadi Dar Kadi
                   </h2>
 
                   {/* Tagline */}
