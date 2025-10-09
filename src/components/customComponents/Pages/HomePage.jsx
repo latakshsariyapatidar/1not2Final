@@ -218,10 +218,7 @@ const HomePage = () => {
 
                   {/* Description */}
                   <p className="text-sm sm:text-base text-gray-300 mb-6 sm:mb-8 leading-relaxed">
-                    An intense psychological thriller that explores the duality
-                    of human nature. Experience a gripping narrative that will
-                    keep you on the edge of your seat as darkness and light
-                    collide in unexpected ways.
+                   In the heart of the city’s dark underworld, love turns to betrayal and loyalty to chaos. KADI DAR KADI follows two men entangled in a deadly web spun by crime, passion, and deceit — where survival is the only truth.
                   </p>
 
                   {/* CTA Buttons */}
