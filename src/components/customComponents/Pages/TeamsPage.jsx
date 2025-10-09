@@ -31,7 +31,7 @@ const TeamsPage = () => {
       bio: "Leading creative and performance direction.",
     },
     {
-      image: "/TeamMembers/",
+      image: "/TeamMembers/sdhashank.jpg",
       title: "Shashank",
       subtitle: "Director",
       handle: "@Perushashank",
