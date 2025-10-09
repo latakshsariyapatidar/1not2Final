@@ -9,19 +9,113 @@ const TeamsPage = () => {
   // Team members data - production team
   const teamMembers = [
     {
+      image:
+        "public/TeamMembers/krishnaw.jpg",
+      title: "Krishna Mishra",
+      subtitle: "Founder · CEO · Actor",
+      handle: "@krishnamishra_2329",
+      borderColor: "#FF7B00",
+      gradient: "linear-gradient(145deg, #FF7B00, #000)",
+      url: "https://www.instagram.com/krishnamishra_2329",
+      bio: "Visionary behind 1not2 Production, leading creative and performance direction.",
+    },
+    {
+      image: "public/TeamMembers/",
+      title: "Shashank",
+      subtitle: "Director",
+      handle: "@Perushashank",
+      borderColor: "#00C2FF",
+      gradient: "linear-gradient(145deg, #00C2FF, #000)",
+      url: "https://instagram.com/Perushashank",
+      bio: "Guiding the lens and the story with a creative vision.",
+    },
+    {
+      image:
+        "public/TeamMembers/VedantGhodke.jpg",
+      title: "Vedant Ghodke",
+      subtitle: "Creative Head",
+      handle: "@_vedant_ghodke",
+      borderColor: "#FF2E63",
+      gradient: "linear-gradient(145deg, #FF2E63, #000)",
+      url: "https://linkedin.com/in/vedantghodke-profile",
+      bio: "Crafting ideas that define the visual identity of every frame.",
+    },
+    {
+      image:
+        "public/TeamMembers/Silus.jpg",
+      title: "SILAS",
+      subtitle: "Cinematographer · Camerahandler",
+      handle: "@Staniz_k4",
+      borderColor: "#16FF00",
+      gradient: "linear-gradient(145deg, #16FF00, #000)",
+      url: "https://instagram.com/Staniz_k4",
+      bio: "Capturing motion and emotion through the perfect frame.",
+    },
+    {
+      image: "public/TeamMembers/ricky.jpg",
+      title: "Penumaka Ricky Charan",
+      subtitle: "Assistant Cinematographer",
+      handle: "@rickycharan_rc",
+      borderColor: "#FFD60A",
+      gradient: "linear-gradient(145deg, #FFD60A, #000)",
+      url: "https://instagram.com/rickycharan_rc",
+      bio: "Supporting the vision from behind the lens.",
+    },
+    {
       image: "public/TeamMembers/Lataksh.jpg",
       title: "Lataksh Sariya",
       subtitle: "Technical Lead (Web)",
       handle: "@lataksh_sariya",
       borderColor: "#5227FF",
       gradient: "linear-gradient(145deg, #5227FF, #000)",
-      location: "Indore",
       url: "https://github.com/latakshsariyapatidar",
-      bio: "Building and running our digital home."
+      bio: "Building and running our digital home.",
     },
-    
+    {
+      image:
+        "public/TeamMembers/rushikesh.jpg",
+      title: "Rushikesh Deshmukh",
+      subtitle: "Music Director",
+      handle: "@rusheeesh, @thedumbrooh",
+      borderColor: "#9D00FF",
+      gradient: "linear-gradient(145deg, #9D00FF, #000)",
+      url: "https://linkedin.com/in/rushikesh-deshmukh",
+      bio: "Composing the rhythm that shapes our stories.",
+    },
+    {
+      image:
+        "public/TeamMembers/aayush.jpg",
+      title: "Ayush Raj",
+      subtitle: "Editor",
+      handle: "@itsxayush.raj",
+      borderColor: "#FF0054",
+      gradient: "linear-gradient(145deg, #FF0054, #000)",
+      url: "https://linkedin.com/in/ayush-raj-13x/",
+      bio: "Piecing together moments to create seamless storytelling.",
+    },
+    {
+      image:
+        "public/TeamMembers/Ashmit.webp",
+      title: "Ashmit Singh",
+      subtitle: "Writer",
+      handle: "@ashmit0712_",
+      borderColor: "#00FFB3",
+      gradient: "linear-gradient(145deg, #00FFB3, #000)",
+      url: "https://linkedin.com/in/ashmit-singh-172771386",
+      bio: "Penning words that breathe life into the screen.",
+    },
+     {
+      image:
+        "public/TeamMembers/sujal.jpg",
+      title: "Sujal",
+      subtitle: "Assistant Director",
+      handle: "@_sujal.3012",
+      borderColor: "#9D00FF",
+      gradient: "linear-gradient(145deg, #9D00FF, #000)",
+      url: "https://www.linkedin.com/in/sujal-chaudhari-b97a6231a?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      bio: "Bridging vision and execution, making sure every shot tells its story seamlessly.",
+    },
   ];
-
 
   return (
     <div
@@ -41,7 +135,7 @@ const TeamsPage = () => {
       {/* Content Layer */}
       <div className="relative z-20">
         {/* Hero Section */}
-        <motion.section 
+        <motion.section
           className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -75,7 +169,8 @@ const TeamsPage = () => {
                   className="block text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold uppercase tracking-[0.15em]"
                   style={{
                     fontFamily: "'Compressa', sans-serif",
-                    background: "linear-gradient(135deg, #5227FF, #FF9FFC, #B19EEF)",
+                    background:
+                      "linear-gradient(135deg, #5227FF, #FF9FFC, #B19EEF)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     maxWidth: "100%",
@@ -96,12 +191,11 @@ const TeamsPage = () => {
                 transition={{ duration: 0.8, delay: 0.3 }}
                 className="text-base sm:text-lg lg:text-xl text-gray-300 font-light tracking-wide max-w-3xl mx-auto mb-12 sm:mb-16 px-4"
               >
-                A collective of passionate storytellers, visual artists, and technical wizards
+                A collective of passionate storytellers, visual artists, and
+                technical wizards
                 <br className="hidden sm:block" />
                 united by one vision: to create cinematic magic
               </motion.p>
-
-
 
               {/* Scroll Indicator */}
               <motion.div
@@ -110,10 +204,16 @@ const TeamsPage = () => {
                 transition={{ duration: 1, delay: 0.8 }}
                 className="flex flex-col items-center gap-3"
               >
-                <span className="text-sm text-gray-400 uppercase tracking-widest">Meet Our Team</span>
+                <span className="text-sm text-gray-400 uppercase tracking-widest">
+                  Meet Our Team
+                </span>
                 <motion.div
                   animate={{ y: [0, 10, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                   className="text-2xl text-purple-400"
                 >
                   ↓
@@ -151,7 +251,6 @@ const TeamsPage = () => {
                   }}
                 />
               </div>
-
             </motion.div>
 
             {/* ChromaGrid Team Display */}
@@ -194,11 +293,12 @@ const TeamsPage = () => {
                 Want to work with us?
               </h2>
               <p className="text-lg sm:text-xl text-gray-300 mb-10 sm:mb-12 font-light leading-relaxed px-4">
-                We're always looking for talented individuals who share our passion
+                We're always looking for talented individuals who share our
+                passion
                 <br className="hidden sm:block" />
                 for storytelling and cinematic excellence
               </p>
-              
+
               <motion.a
                 href="/contact"
                 whileHover={{ scale: 1.05 }}

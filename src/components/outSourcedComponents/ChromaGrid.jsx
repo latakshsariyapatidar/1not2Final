@@ -155,13 +155,17 @@ const ChromaGrid = ({
                 "radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)",
             }}
           />
-          <div className="relative z-10 flex-1 p-[10px] box-border">
-            <img
-              src={c.image}
-              alt={c.title}
-              loading="lazy"
-              className="w-full h-full object-cover rounded-[10px]"
-            />
+          <div className="relative z-10 p-[10px] box-border">
+            {/* Fixed 1:1 aspect ratio image container */}
+            <div className="relative w-full overflow-hidden rounded-[10px]" style={{ aspectRatio: "1 / 1" }}>
+              <img
+                src={c.image}
+                alt={c.title}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ objectPosition: "center" }}
+              />
+            </div>
           </div>
           <footer className="relative z-10 p-3 text-white font-sans grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
             <h3 className="m-0 text-[1.05rem] font-semibold">{c.title}</h3>

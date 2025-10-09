@@ -108,8 +108,8 @@ const ContactPage = () => {
     {
       icon: "📧",
       label: "Email",
-      value: "info@1not2.com",
-      link: "mailto:info@1not2.com",
+      value: "onenot2production@gmail.com",
+      link: "mailto:onenot2production@gmail.com",
       color: "#5227FF"
     },
     {

@@ -179,14 +179,38 @@ export default function Carousel({
               }}
               transition={effectiveTransition}
             >
-              <div className={`${round ? 'p-0 m-0' : 'mb-4 p-5'}`}>
-                <span className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-[#060010]">
-                  {item.icon}
-                </span>
-              </div>
-              <div className="p-5">
+              {/* Image Container - Fixed 1:1 Aspect Ratio */}
+              {item.image && (
+                <div 
+                  className="relative shrink-0 overflow-hidden"
+                  style={{
+                    width: '100%',
+                    aspectRatio: '1 / 1',
+                    ...(round && { borderRadius: '50%' })
+                  }}
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title || 'Carousel item'}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    style={{ objectPosition: 'center' }}
+                  />
+                </div>
+              )}
+
+              {/* Icon Container - Only show if no image */}
+              {!item.image && (
+                <div className={`${round ? 'p-0 m-0' : 'mb-4 p-5'}`}>
+                  <span className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-[#060010]">
+                    {item.icon}
+                  </span>
+                </div>
+              )}
+
+              {/* Text Content */}
+              <div className="p-5 flex-grow flex flex-col justify-end">
                 <div className="mb-1 font-black text-lg text-white">{item.title}</div>
-                <p className="text-sm text-white">{item.description}</p>
+                {item.description && <p className="text-sm text-white">{item.description}</p>}
               </div>
             </motion.div>
           );
