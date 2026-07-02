@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { MoviesManager } from "@/components/admin/MoviesManager";
 import { BookingsManager } from "@/components/admin/BookingsManager";
+import { VerifiedBookingsManager } from "@/components/admin/VerifiedBookingsManager";
+import { RejectedBookingsManager } from "@/components/admin/RejectedBookingsManager";
 import { TicketScanner } from "@/components/admin/TicketScanner";
 import { ContactsManager } from "@/components/admin/ContactsManager";
+import { TeamManager } from "@/components/admin/TeamManager";
 import { getFbAuth } from "@/lib/firebase";
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "firebase/auth";
 
@@ -83,8 +86,11 @@ export function Admin() {
   }
 
   const tabs = [
-    { id: "bookings", label: "Bookings", icon: "🎟️" },
+    { id: "bookings", label: "Pending Bookings", icon: "⏳" },
+    { id: "verified-bookings", label: "Verified Bookings", icon: "✅" },
+    { id: "rejected-bookings", label: "Rejected Bookings", icon: "❌" },
     { id: "movies", label: "Movies", icon: "🎬" },
+    { id: "team", label: "Team", icon: "👥" },
     { id: "inquiries", label: "Inquiries", icon: "📩" },
     { id: "scanner", label: "Scanner", icon: "🔍" },
   ];
@@ -132,9 +138,12 @@ export function Admin() {
 
         <div className="bg-surface border border-border p-6 md:p-8 min-h-[60vh]">
           {activeTab === "bookings" && <BookingsManager />}
+          {activeTab === "verified-bookings" && <VerifiedBookingsManager />}
+          {activeTab === "rejected-bookings" && <RejectedBookingsManager />}
           {activeTab === "movies" && <MoviesManager />}
           {activeTab === "inquiries" && <ContactsManager />}
           {activeTab === "scanner" && <TicketScanner />}
+          {activeTab === "team" && <TeamManager />}
         </div>
       </div>
     </section>

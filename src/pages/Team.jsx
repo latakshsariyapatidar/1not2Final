@@ -1,8 +1,19 @@
-import { TEAM, PortraitCard } from "./helpers";
+import { useTeam } from "@/hooks/use-team";
+import { PortraitCard } from "./helpers";
 
 export function Team() {
-  const founder = TEAM.find((member) => member.featured) ?? TEAM[0];
-  const rest = TEAM.filter((member) => member !== founder);
+  const { team, loading } = useTeam();
+
+  if (loading) {
+    return (
+      <section className="scroll-mt-24 border-t border-border px-6 py-24 md:px-12 md:py-32 flex items-center justify-center min-h-[50vh]">
+        <p className="label-mono animate-pulse text-gold">Loading team...</p>
+      </section>
+    );
+  }
+
+  const founder = team.find((member) => member.featured) ?? team[0];
+  const rest = team.filter((member) => member !== founder);
 
   return (
     <section className="scroll-mt-24 border-t border-border px-6 py-24 md:px-12 md:py-32">

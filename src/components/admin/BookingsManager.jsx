@@ -1,33 +1,33 @@
 import { useState, useEffect } from "react";
 import { getDb } from "@/lib/firebase";
-import { collection, getDocs, updateDoc, doc, query, orderBy } from "firebase/firestore";
-import emailjs from "@emailjs/browser";
+import { collection, getDocs, updateDoc, doc, query, orderBy, deleteDoc } from "firebase/firestore";
 
-// --- EmailJS Configuration ---
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-const EMAILJS_CONFIRM_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_CONFIRM_TEMPLATE_ID;
-const EMAILJS_REJECT_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_REJECT_TEMPLATE_ID;
-const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-// Initialize EmailJS with your Public Key
-if (EMAILJS_PUBLIC_KEY) {
-  emailjs.init(EMAILJS_PUBLIC_KEY);
-}
-// -----------------------------
 export function BookingsManager() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
   const [movieFilter, setMovieFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isClearing, setIsClearing] = useState(false);
 
   const fetchBookings = async () => {
     setLoading(true);
     const db = getDb();
-    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
-    setBookings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    setLoading(false);
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      const allBookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Filter strictly for pending bookings
+      const pendingBookings = allBookings.filter(b => b.paymentStatus === "pending" || !b.paymentStatus);
+      setBookings(pendingBookings);
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -35,9 +35,8 @@ export function BookingsManager() {
   }, []);
 
   const stats = {
-    total: bookings.length,
-    pending: bookings.filter(b => b.paymentStatus === "pending" || !b.paymentStatus).length,
-    revenue: bookings.reduce((acc, b) => acc + (b.paymentStatus === "verified" ? (b.totalAmount || 0) : 0), 0)
+    pendingCount: bookings.length,
+    potentialRevenue: bookings.reduce((acc, b) => acc + (b.totalAmount || 0), 0)
   };
 
   const handleVerify = async (booking) => {
@@ -58,7 +57,6 @@ export function BookingsManager() {
       
       const templateParams = {
         to_name: booking.customerName,
-        to_email: booking.customerEmail,
         movie_title: booking.movieTitle,
         ticket_count: booking.numberOfTickets,
         qr_code_url: ticketQrUrl,
@@ -66,19 +64,32 @@ export function BookingsManager() {
         utr_number: booking.paymentUTR
       };
 
-      console.log("Attempting to send email with params:", templateParams);
+      console.log("Attempting to send email via Serverless Nodemailer API...");
 
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_CONFIRM_TEMPLATE_ID,
-        templateParams
-      );
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: booking.customerEmail,
+          subject: "OneNotTwo — Booking Confirmation",
+          type: "confirm",
+          templateParams,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to send email");
+      }
 
       alert(`Success! Ticket verified and confirmation email sent to ${booking.customerEmail}.`);
       fetchBookings();
     } catch (err) {
       console.error("Verification/Email failed:", err);
-      alert("Verification successful, but email failed to send. Check EmailJS config.");
+      alert(`Verification successful, but email failed to send: ${err.message}`);
+      fetchBookings(); // Still reload list
     }
   };
 
@@ -98,33 +109,75 @@ export function BookingsManager() {
       
       const templateParams = {
         to_name: booking.customerName,
-        to_email: booking.customerEmail,
         movie_title: booking.movieTitle,
         utr_number: booking.paymentUTR
       };
 
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_REJECT_TEMPLATE_ID,
-        templateParams
-      );
+      console.log("Attempting to send rejection email via Serverless Nodemailer API...");
+
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: booking.customerEmail,
+          subject: "OneNotTwo — Payment Verification Failed",
+          type: "reject",
+          templateParams,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to send email");
+      }
 
       alert(`Booking rejected and cancellation email sent to ${booking.customerEmail}.`);
       fetchBookings();
     } catch (err) {
       console.error("Rejection/Email failed:", err);
-      alert("Booking rejected, but email failed to send.");
+      alert(`Booking rejected, but email failed to send: ${err.message}`);
+      fetchBookings();
+    }
+  };
+
+  const handleClearPendingQueue = async () => {
+    if (bookings.length === 0) {
+      alert("No pending bookings to clear.");
+      return;
+    }
+    
+    if (!confirm(`WARNING: This will permanently delete all ${bookings.length} pending bookings from the database. Are you sure?`)) {
+      return;
+    }
+
+    if (!confirm("Confirming again: do you want to proceed with deleting all pending bookings? This action is irreversible.")) {
+      return;
+    }
+
+    setIsClearing(true);
+    const db = getDb();
+    try {
+      const deletePromises = bookings.map(b => deleteDoc(doc(db, "bookings", b.id)));
+      await Promise.all(deletePromises);
+      alert("Pending bookings queue cleared successfully.");
+      fetchBookings();
+    } catch (err) {
+      console.error("Error clearing pending queue:", err);
+      alert(`Failed to clear: ${err.message}`);
+    } finally {
+      setIsClearing(false);
     }
   };
 
   const uniqueMovies = [...new Set(bookings.map(b => b.movieTitle))].sort();
 
   const filteredBookings = bookings.filter(b => {
-    const matchesStatus = filter === "all" || b.paymentStatus === filter;
     const matchesMovie = movieFilter === "all" || b.movieTitle === movieFilter;
     const searchStr = `${b.customerName} ${b.customerEmail} ${b.paymentUTR} ${b.movieTitle}`.toLowerCase();
     const matchesSearch = searchStr.includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesMovie && matchesSearch;
+    return matchesMovie && matchesSearch;
   });
 
   if (loading) return <p className="label-mono animate-pulse">Loading bookings...</p>;
@@ -132,24 +185,30 @@ export function BookingsManager() {
   return (
     <div className="space-y-8">
       {/* Stats Dashboard */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-background border border-border p-4">
-          <p className="label-mono text-[10px] text-muted-foreground uppercase">Total Bookings</p>
-          <p className="font-display text-3xl">{stats.total}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="bg-background border border-border p-4">
           <p className="label-mono text-[10px] text-muted-foreground uppercase text-yellow-500">Pending Verification</p>
-          <p className="font-display text-3xl text-yellow-500">{stats.pending}</p>
+          <p className="font-display text-3xl text-yellow-500">{stats.pendingCount}</p>
         </div>
         <div className="bg-background border border-border p-4 border-l-gold">
-          <p className="label-mono text-[10px] text-gold uppercase">Total Revenue (Verified)</p>
-          <p className="font-display text-3xl text-gold">₹{stats.revenue}</p>
+          <p className="label-mono text-[10px] text-gold uppercase">Potential Revenue (Pending)</p>
+          <p className="font-display text-3xl text-gold">₹{stats.potentialRevenue}</p>
         </div>
       </div>
 
       <div className="flex flex-wrap justify-between items-center gap-4">
-        <h3 className="font-display text-3xl">Tickets & Bookings</h3>
+        <div>
+          <h3 className="font-display text-3xl">Pending Bookings</h3>
+          <p className="label-mono text-xs text-muted-foreground mt-1">Verify or reject incoming ticket requests.</p>
+        </div>
         <div className="flex flex-wrap gap-4 items-center">
+          <button
+            onClick={handleClearPendingQueue}
+            disabled={isClearing || bookings.length === 0}
+            className="text-xs label-mono border border-red-500/30 hover:border-red-500 hover:text-red-500 py-2 px-4 transition-all duration-300 disabled:opacity-50 cursor-pointer"
+          >
+            {isClearing ? "Clearing..." : "🗑️ Clear Pending Queue"}
+          </button>
           <input 
             type="text" 
             placeholder="Search bookings..." 
@@ -166,16 +225,6 @@ export function BookingsManager() {
             {uniqueMovies.map(movie => (
               <option key={movie} value={movie}>{movie}</option>
             ))}
-          </select>
-          <select 
-            value={filter} 
-            onChange={e => setFilter(e.target.value)}
-            className="bg-background border border-border p-2 text-xs label-mono outline-none focus:border-gold"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="verified">Verified</option>
-            <option value="rejected">Rejected</option>
           </select>
         </div>
       </div>
@@ -209,38 +258,24 @@ export function BookingsManager() {
                 <td className="py-4 px-2 font-mono text-[10px] text-gold">{booking.paymentUTR}</td>
                 <td className="py-4 px-2">₹{booking.totalAmount}</td>
                 <td className="py-4 px-2">
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] uppercase font-bold ${
-                    booking.paymentStatus === 'verified' ? 'bg-green-500/20 text-green-500' : 
-                    booking.paymentStatus === 'rejected' ? 'bg-red-500/20 text-red-500' :
-                    'bg-yellow-500/20 text-yellow-500'
-                  }`}>
-                    {booking.paymentStatus || 'pending'}
+                  <span className="px-2 py-0.5 rounded-full text-[9px] uppercase font-bold bg-yellow-500/20 text-yellow-500">
+                    pending
                   </span>
                 </td>
                 <td className="py-4 px-2 text-right">
                   <div className="flex justify-end gap-2">
-                    {booking.paymentStatus === 'pending' && (
-                      <>
-                        <button 
-                          onClick={() => handleVerify(booking)}
-                          className="bg-gold text-background px-3 py-1 text-[9px] font-bold uppercase hover:bg-white transition-colors"
-                        >
-                          Verify
-                        </button>
-                        <button 
-                          onClick={() => handleReject(booking)}
-                          className="border border-red-500 text-red-500 px-3 py-1 text-[9px] font-bold uppercase hover:bg-red-500 hover:text-white transition-all"
-                        >
-                          Reject
-                        </button>
-                      </>
-                    )}
-                    {booking.paymentStatus === 'verified' && (
-                      <span className="text-[10px] label-mono text-green-500">Confirmed</span>
-                    )}
-                    {booking.paymentStatus === 'rejected' && (
-                      <span className="text-[10px] label-mono text-red-500">Cancelled</span>
-                    )}
+                    <button 
+                      onClick={() => handleVerify(booking)}
+                      className="bg-gold text-background px-3 py-1 text-[9px] font-bold uppercase hover:bg-white transition-colors cursor-pointer"
+                    >
+                      Verify
+                    </button>
+                    <button 
+                      onClick={() => handleReject(booking)}
+                      className="border border-red-500 text-red-500 px-3 py-1 text-[9px] font-bold uppercase hover:bg-red-500 hover:text-white transition-all cursor-pointer"
+                    >
+                      Reject
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -248,7 +283,9 @@ export function BookingsManager() {
           </tbody>
         </table>
         {filteredBookings.length === 0 && (
-          <div className="py-20 text-center label-mono text-muted-foreground italic">No bookings found.</div>
+          <div className="py-20 text-center label-mono text-muted-foreground italic border border-dashed border-border">
+            No pending bookings in queue.
+          </div>
         )}
       </div>
     </div>
