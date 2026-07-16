@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getDb } from "@/lib/firebase";
-import { collection, getDocs, updateDoc, doc, query, orderBy, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, query, deleteDoc } from "firebase/firestore";
 
 export function BookingsManager() {
   const [bookings, setBookings] = useState([]);
@@ -17,9 +17,28 @@ export function BookingsManager() {
       return;
     }
     try {
-      const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+      const q = query(collection(db, "bookings"));
       const snap = await getDocs(q);
       const allBookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const getTimestamp = (val) => {
+        if (!val) return 0;
+        if (typeof val.toDate === "function") {
+          return val.toDate().getTime();
+        }
+        if (typeof val.seconds === "number") {
+          return val.seconds * 1000;
+        }
+        const parsed = Date.parse(val);
+        return isNaN(parsed) ? 0 : parsed;
+      };
+
+      allBookings.sort((a, b) => {
+        const timeA = getTimestamp(a.createdAt);
+        const timeB = getTimestamp(b.createdAt);
+        return timeB - timeA;
+      });
+
       // Filter strictly for pending bookings
       const pendingBookings = allBookings.filter(b => b.paymentStatus === "pending" || !b.paymentStatus);
       setBookings(pendingBookings);
