@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getDb } from "@/lib/firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query } from "firebase/firestore";
 
 export function VerifiedBookingsManager() {
   const [bookings, setBookings] = useState([]);
@@ -16,9 +16,28 @@ export function VerifiedBookingsManager() {
       return;
     }
     try {
-      const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+      const q = query(collection(db, "bookings"));
       const snap = await getDocs(q);
       const allBookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const getTimestamp = (val) => {
+        if (!val) return 0;
+        if (typeof val.toDate === "function") {
+          return val.toDate().getTime();
+        }
+        if (typeof val.seconds === "number") {
+          return val.seconds * 1000;
+        }
+        const parsed = Date.parse(val);
+        return isNaN(parsed) ? 0 : parsed;
+      };
+
+      allBookings.sort((a, b) => {
+        const timeA = getTimestamp(a.createdAt);
+        const timeB = getTimestamp(b.createdAt);
+        return timeB - timeA;
+      });
+
       // Filter strictly for verified bookings
       const verifiedBookings = allBookings.filter(b => b.paymentStatus === "verified");
       setBookings(verifiedBookings);
