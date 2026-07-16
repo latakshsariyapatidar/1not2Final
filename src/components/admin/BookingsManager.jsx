@@ -7,6 +7,7 @@ export function BookingsManager() {
   const [loading, setLoading] = useState(true);
   const [movieFilter, setMovieFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [isClearing, setIsClearing] = useState(false);
 
   const fetchBookings = async () => {
@@ -55,7 +56,7 @@ export function BookingsManager() {
 
   const stats = {
     pendingCount: bookings.length,
-    potentialRevenue: bookings.reduce((acc, b) => acc + (b.totalAmount || 0), 0)
+    potentialRevenue: bookings.reduce((acc, b) => acc + (Number(b.totalAmount) || 0), 0)
   };
 
   const handleVerify = async (booking) => {
@@ -199,6 +200,17 @@ export function BookingsManager() {
     return matchesMovie && matchesSearch;
   });
 
+  // Reset to page 1 on filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [movieFilter, searchTerm]);
+
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(filteredBookings.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const paginatedBookings = filteredBookings.slice(startIndex, endIndex);
+
   if (loading) return <p className="label-mono animate-pulse">Loading bookings...</p>;
 
   return (
@@ -263,7 +275,7 @@ export function BookingsManager() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
-            {filteredBookings.map(booking => (
+            {paginatedBookings.map(booking => (
               <tr key={booking.id} className="label-mono text-xs hover:bg-surface-2 transition-colors">
                 <td className="py-4 px-2 text-[10px]">
                   {booking.createdAt?.toDate ? booking.createdAt.toDate().toLocaleDateString() : "New"}
@@ -307,6 +319,57 @@ export function BookingsManager() {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-border/50 pt-4 label-mono text-xs mt-4">
+          <p className="text-muted-foreground">
+            Showing <span className="text-foreground font-semibold">{startIndex + 1}</span> to{" "}
+            <span className="text-foreground font-semibold">
+              {Math.min(endIndex, filteredBookings.length)}
+            </span>{" "}
+            of <span className="text-foreground font-semibold">{filteredBookings.length}</span> bookings
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="border border-border px-3 py-1.5 hover:border-gold hover:text-gold transition-colors disabled:opacity-30 disabled:hover:border-border disabled:hover:text-muted-foreground cursor-pointer disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(page => page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1)
+                .map((page, index, array) => {
+                  const showEllipsis = index > 0 && page - array[index - 1] > 1;
+                  return (
+                    <div key={page} className="flex items-center gap-1">
+                      {showEllipsis && <span className="text-muted-foreground px-1">...</span>}
+                      <button
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-3 py-1.5 transition-colors cursor-pointer ${
+                          currentPage === page
+                            ? "bg-gold text-background font-bold"
+                            : "border border-border hover:border-gold hover:text-gold"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className="border border-border px-3 py-1.5 hover:border-gold hover:text-gold transition-colors disabled:opacity-30 disabled:hover:border-border disabled:hover:text-muted-foreground cursor-pointer disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
